@@ -1,5 +1,5 @@
 # DeepNeuralNetworks
-A python based Deep Neural Network - A copy-paste effort from Matlab  (rasmusbergpalm matlab code) to Python
+A python based Deep Neural Network - A "copy-paste" effort from Matlab  (rasmusbergpalm matlab code) to Python.
 I have been learning about Python and Deep Learning. To fully understand the inners workings of Deep Neural Networks, 
 I decided to translate the Matlab code from https://github.com/rasmusbergpalm/DeepLearnToolbox to Python.
 
@@ -8,3 +8,6 @@ If you hare stuck at hefty packages like caffe, cuda, torch , tensorflow and fee
 then the matlab version of the code or this python version is where you should start.
 
 This is currently a work in progress. I will be comitting codes as soon as they are stable. 
+Please note that I have tried as much as possible to produce a "Copy-Paste" version of the code, despite that, you will find many code differences. Like handling of overlfows, logs, exponentials and classes. 
+
+I hope you will enjoy using the code as much as I enjoyed translating it :)
