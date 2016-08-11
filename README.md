@@ -5,4 +5,6 @@ I decided to translate the Matlab code from https://github.com/rasmusbergpalm/De
 
 Note you are free to update this code and submit fixes. It is a code purely written for educational purpose. 
 If you hare stuck at hefty packages like caffe, cuda, torch , tensorflow and feel lost with deep neural networks, 
-then the matlab version of the code or this python version is where you should start
+then the matlab version of the code or this python version is where you should start.
+
+This is currently a work in progress. I will be comitting codes as soon as they are stable. 
