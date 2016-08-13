@@ -24,3 +24,14 @@ way, but that does not serve the purpose of a clear code understanding. I have a
 	4- Windows 10
 	5- Matlab 2015a
 	6- Python 3.5
+
+# Accuracy Report (Python vs Matlab)
+
+With epochs = 1 
+
+| Neural Networks        | Python          | Matlab   |
+| ---------------------- |:---------------:| --------:|
+| Vanilla		         | 0.071304        | 0.070366 | 
+| L2 Decay		         | 0.066278        | 0.063632 | 
+| Dropout		         | 0.071164        | 0.070079 | 
+| Sigmoid		         | 0.067494        | 0.067301 | 
