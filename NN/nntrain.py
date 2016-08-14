@@ -18,7 +18,7 @@ def nntrain(nn, train_x, train_y, opts):
     opts["validation"] = 0
     numbatches = m/batchsize
     loss = Collections.Loss(numepochs)
-    
+    figureNo = 1
     if "plot" in opts and opts["plot"]== 1:
         fhandle = plt.figure();
     
@@ -60,7 +60,7 @@ def nntrain(nn, train_x, train_y, opts):
             nn.LearningRate = nn.LearningRate*nn.ScalingLearningRate
         if fhandle is not None:
            pass
-           #nnupdatefigures.nnupdatefigures(nn, fhandle, loss, opts, i)
+           nnupdatefigures.nnupdatefigures(nn, figureNo, loss, opts, i)
             
         print("epoch " , i+1 ,"/" , opts["numepochs"], ". Took " ,t, " seconds. Mini-batch mean squared error on training set is " , np.mean(L[n-numbatches:n-1]) ,str_pref)
         nn.LearningRate = nn.LearningRate * nn.ScalingLearningRate;
