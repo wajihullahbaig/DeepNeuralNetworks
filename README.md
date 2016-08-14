@@ -20,14 +20,14 @@ way, but that does not serve the purpose of a clear code understanding. I have a
 
 	1- Anaconda 4.1.1
 	2- PyDev
-	3- Eclipse Juno
+	3- Eclipse Luna
 	4- Windows 10
 	5- Matlab 2015a
 	6- Python 3.5
 
 # Accuracy Report (Python vs Matlab)
 
-With epochs = 1 
+With epochs = 1, Full-Batch accuracies 
 
 | Neural Networks        | Python          | Matlab   |
 | ---------------------- |:---------------:| --------:|
