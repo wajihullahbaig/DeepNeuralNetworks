@@ -26,8 +26,8 @@ way, but that does not serve the purpose of a clear code understanding. I have a
 	6- Python 3.5
 
 # Accuracy comparison (Python vs Matlab)
-
-With epochs = 1, Full-Batch Errors 
+The following table shows the full batch errors produced by Python and Matlab. It is evident that that both are close 
+in terms of accuracy with epochs = 1
 
 | Neural Networks        | Python          | Matlab   |
 | ---------------------- |:---------------:| --------:|
