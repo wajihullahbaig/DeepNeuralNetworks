@@ -58,10 +58,9 @@ def nntrain(nn, train_x, train_y, opts):
             loss = nneval.nneval(nn,loss,train_x,train_y,None,None,i)
             str_pref = " Full-batch train err = {0}".format(loss.Training.E[i])
             nn.LearningRate = nn.LearningRate*nn.ScalingLearningRate
-        if fhandle is not None:
-           pass
+        if fhandle is not None:  
            nnupdatefigures.nnupdatefigures(nn, figureNo, loss, opts, i)
-            
+                           
         print("epoch " , i+1 ,"/" , opts["numepochs"], ". Took " ,t, " seconds. Mini-batch mean squared error on training set is " , np.mean(L[n-numbatches:n-1]) ,str_pref)
         nn.LearningRate = nn.LearningRate * nn.ScalingLearningRate;
     return nn,L     
