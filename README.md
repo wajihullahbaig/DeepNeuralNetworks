@@ -1,5 +1,5 @@
 # DeepNeuralNetworks
-A python based Deep Neural Network - A "copy-paste" effort from Matlab  (rasmusbergpalm matlab code) to Python.
+Python based Deep Neural Network code set - A "copy-paste" effort from Matlab  (rasmusbergpalm matlab code) to Python.
 I have been learning about Python and Deep Learning. To fully understand the inners workings of Deep Neural Networks, 
 I decided to translate the Matlab code from https://github.com/rasmusbergpalm/DeepLearnToolbox to Python.
 
