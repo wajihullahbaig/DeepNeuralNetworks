@@ -25,9 +25,9 @@ way, but that does not serve the purpose of a clear code understanding. I have a
 	5- Matlab 2015a
 	6- Python 3.5
 
-# Accuracy Report (Python vs Matlab)
+# Accuracy comparison (Python vs Matlab)
 
-With epochs = 1, Full-Batch accuracies 
+With epochs = 1, Full-Batch Errors 
 
 | Neural Networks        | Python          | Matlab   |
 | ---------------------- |:---------------:| --------:|
