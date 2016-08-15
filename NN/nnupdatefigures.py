@@ -5,8 +5,10 @@ Created on Aug 10, 2016
 '''
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.pyplot import ioff, ion
 def nnupdatefigures(nn,figureNo,L,opts,i):
     if i > 0: #Dont plot the first points, its only a Point
+        ioff()
         x_ax = np.zeros([1,i+1],dtype = np.float64)
         for v in range(i+1):
             x_ax[0,v] = v+1 # Add a one, this helps in show epochs starting from 1 in plots
@@ -36,7 +38,9 @@ def nnupdatefigures(nn,figureNo,L,opts,i):
             plot_yfrac   = [plot_yfrac, L.val.E_Frac[0:i+1].T];        
         
         #plotting
-        plt.figure(figureNo)            
+        if plt.fignum_exists(str(figureNo)) == False:
+            plt.ion()
+        plt.figure(figureNo)     
         if nn.Output == "softmax":
             plt.subplot(121)
             plt.plot(plot_x,plot_ye,label = M[0] if i == 1 else "",color = 'b') # i == 0 used to plot legends once
@@ -54,8 +58,9 @@ def nnupdatefigures(nn,figureNo,L,opts,i):
             plt.xlim(0, opts["numepochs"]+1)      
             plt.legend(loc="upper right")
             
-            plt.ion()
-            plt.show()
+            plt.draw()
+            plt.pause(0.01)
+            
         else:
             plt.xlabel("Number of epochs")
             plt.ylabel("Error")
@@ -64,4 +69,5 @@ def nnupdatefigures(nn,figureNo,L,opts,i):
             plt.xlim(0, opts["numepochs"]+1)        
             plt.legend(loc="upper right")
             plt.draw()
-            plt.show()
+            plt.pause(0.01)
+        
