@@ -13,9 +13,12 @@ Please note that I have tried as much as possible to produce a "Copy-Paste" vers
 I hope you will enjoy using the code as much as I enjoyed translating it :)
 
 # Note on code Translations
-I have tried my best to keep the code in more a understanable way. I know there are various functions that could have been done more clean in a more pythonic
-way, but that does not serve the purpose of a clear code understanding. I have also tried my best to develop the code that is close to matlab in terms of accuracy.
 
+I have tried my best to keep the code in a more understanable way. I know there are various functions that could have been done far better and clean in a more pythonic way, but that does not serve the purpose of a clear code understanding. I have also tried my best to develop the code that is close to matlab in terms of accuracy.
+ ## Translation notes
+ 1- Random states for both Python and Matlab have been set using the 'twister' algorithm
+ 2- For debugging the code, I have added a single line of code that runs Matlab/Pyhon in a sequential way.
+ 3- Some functions from Matlab like nnsetup() have been replaced by a constructor in Python like FFBONN.NN
 # Dependencies/Dev Tools/Platform
 
 	1- Anaconda 4.1.1
@@ -27,7 +30,8 @@ way, but that does not serve the purpose of a clear code understanding. I have a
 
 # Accuracy comparison (Python vs Matlab)
 The following table shows the full batch errors produced by Python and Matlab. It is evident that that both are close 
-in terms of accuracy with epochs = 1
+in terms of accuracy. 
+With epochs = 1, we have the following outputs
 
 | Neural Networks        | Python          | Matlab   |
 | ---------------------- |:---------------:| --------:|
