@@ -10,17 +10,15 @@ from NN import nnff, nnbp, nnapplygrads, nneval, nnupdatefigures
 from time import time
 from NN import Collections
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import ioff
 
-def nntrain(nn, train_x, train_y, opts):    
+def nntrain(nn, train_x, train_y, opts,figureNo):    
     m = train_x.shape[0]
     batchsize = opts["batchsize"]
     numepochs = opts["numepochs"]
     opts["validation"] = 0
     numbatches = m/batchsize
-    loss = Collections.Loss(numepochs)
-    figureNo = 1
-    if "plot" in opts and opts["plot"]== 1:
-        fhandle = plt.figure();
+    loss = Collections.Loss(numepochs)   
     
     assert (numbatches%1 == 0),"numbatches must be an integer"
     
@@ -58,9 +56,9 @@ def nntrain(nn, train_x, train_y, opts):
             loss = nneval.nneval(nn,loss,train_x,train_y,None,None,i)
             str_pref = " Full-batch train err = {0}".format(loss.Training.E[i])
             nn.LearningRate = nn.LearningRate*nn.ScalingLearningRate
-        if fhandle is not None:  
+        if "plot" in opts and opts["plot"]== 1 and opts["numepochs"] > 1:    
            nnupdatefigures.nnupdatefigures(nn, figureNo, loss, opts, i)
-                           
+                        
         print("epoch " , i+1 ,"/" , opts["numepochs"], ". Took " ,t, " seconds. Mini-batch mean squared error on training set is " , np.mean(L[n-numbatches:n-1]) ,str_pref)
         nn.LearningRate = nn.LearningRate * nn.ScalingLearningRate;
     return nn,L     
