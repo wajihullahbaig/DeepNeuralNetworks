@@ -8,7 +8,6 @@ import numpy as np
 from matplotlib.pyplot import ioff, ion
 def nnupdatefigures(nn,figureNo,L,opts,i):
     if i > 0: #Dont plot the first points, its only a Point
-        ioff()
         x_ax = np.zeros([1,i+1],dtype = np.float64)
         for v in range(i+1):
             x_ax[0,v] = v+1 # Add a one, this helps in show epochs starting from 1 in plots
@@ -26,7 +25,7 @@ def nnupdatefigures(nn,figureNo,L,opts,i):
             plot_yfrac = L.Training.E_Frac[0:i+1]
         else:
             plot_x = x_ax.T
-            plot_ye = L.Training.E[0:i]
+            plot_ye = L.Training.E[0:i+1]
         
         #add error on validation data if present
         if opts["validation"] == 1:
