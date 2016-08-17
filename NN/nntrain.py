@@ -12,14 +12,16 @@ from NN import Collections
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import ioff
 
-def nntrain(nn, train_x, train_y, opts,figureNo):    
+def nntrain(nn, train_x, train_y, opts,val_x,val_y,figureNo):    
     m = train_x.shape[0]
     batchsize = opts["batchsize"]
     numepochs = opts["numepochs"]
     opts["validation"] = 0
+    if val_x is not None and val_y is not None:
+        opts["validation"] = 1
     numbatches = m/batchsize
     loss = Collections.Loss(numepochs)   
-    
+
     assert (numbatches%1 == 0),"numbatches must be an integer"
     
     L = np.zeros(shape=(numepochs*numbatches,1),dtype=np.float64)
@@ -50,10 +52,10 @@ def nntrain(nn, train_x, train_y, opts,figureNo):
         
         str_pref = ""
         if opts["validation"] == 1:
-            loss = nneval.nneval(nn,loss,train_x,train_y,None,None,i)
+            loss = nneval.nneval(nn,loss,train_x,train_y,val_x,val_y,i)
             str_pref = (":Full batch train mse = {0},val mse = {1}".format(loss.Training.E[i],loss.Validity.E[i]))
         else:
-            loss = nneval.nneval(nn,loss,train_x,train_y,None,None,i)
+            loss = nneval.nneval(nn,loss,train_x,train_y,val_x,val_y,i)
             str_pref = " Full-batch train err = {0}".format(loss.Training.E[i])
             nn.LearningRate = nn.LearningRate*nn.ScalingLearningRate
         if "plot" in opts and opts["plot"]== 1 and opts["numepochs"] > 1:    
