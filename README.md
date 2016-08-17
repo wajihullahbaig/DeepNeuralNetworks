@@ -30,7 +30,7 @@ I have tried my best to keep the code in a more understanable way. I know there 
 
 # Accuracy comparison (Python vs Matlab)
 The following table shows the full batch errors produced by Python and Matlab. It is evident that that both are close 
-in terms of accuracy. 
+in terms of accuracy.  
 With epochs = 1, we have the following outputs
 
 | Neural Networks        | Python          | Matlab   |
@@ -39,3 +39,4 @@ With epochs = 1, we have the following outputs
 | L2 Decay		         | 0.066278        | 0.063632 | 
 | Dropout		         | 0.071164        | 0.070079 | 
 | Sigmoid		         | 0.067494        | 0.067301 | 
+| Softmax		         | 0.246335        | 0.385170 |
