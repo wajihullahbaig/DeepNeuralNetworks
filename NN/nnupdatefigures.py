@@ -8,7 +8,7 @@ import numpy as np
 from matplotlib.pyplot import ioff, ion
 def nnupdatefigures(nn,figureNo,L,opts,i):
     if i > 0: #Dont plot the first points, its only a Point
-        x_ax = np.zeros([1,i+1],dtype = np.float64)
+        x_ax = np.zeros((1,i+1),dtype = np.float64)
         for v in range(i+1):
             x_ax[0,v] = v+1 # Add a one, this helps in show epochs starting from 1 in plots
             
@@ -29,12 +29,17 @@ def nnupdatefigures(nn,figureNo,L,opts,i):
         
         #add error on validation data if present
         if opts["validation"] == 1:
-            plot_x       = [plot_x, x_ax.T]
-            plot_ye      = [plot_ye,L.Validity.E[0:i+1].T]
-        
+            plot_x       = np.stack((plot_x, x_ax.T)) # Combine arrays
+            plot_x =     plot_x.squeeze() # Remove the unwanted dimension
+            plot_x = plot_x.T
+            plot_ye      = np.stack((plot_ye,L.Validity.E[0:i+1]))
+            plot_ye = plot_ye.squeeze()
+            plot_ye = plot_ye.T
         #add classification error on validation data if present
         if opts["validation"] == 1 and nn.Output == "softmax":
-            plot_yfrac   = [plot_yfrac, L.val.E_Frac[0:i+1].T];        
+            plot_yfrac   = np.stack((plot_yfrac, L.Validity.E_Frac[0:i+1]));
+            plot_yfrac = plot_yfrac.squeeze()  
+            plot_yfrac = plot_yfrac.T
         
         #plotting
         if plt.fignum_exists(str(figureNo)) == False:
@@ -42,29 +47,48 @@ def nnupdatefigures(nn,figureNo,L,opts,i):
         plt.figure(figureNo)     
         if nn.Output == "softmax":
             plt.subplot(121)
-            plt.plot(plot_x,plot_ye,label = M[0] if i == 1 else "",color = 'b') # i == 0 used to plot legends once
+            if len(M) < 2:
+                if i == 1:
+                    plt.plot(plot_x,plot_ye,label = M, color = 'b')
+                    plt.legend(loc="upper right") 
+            if len(M) > 1:
+                if i == 1:
+                    [t,v] = plt.plot(plot_x,plot_ye) 
+                    plt.legend([t,v],["Training", "Validation"],loc="upper right")
+                else:
+                    plt.plot(plot_x,plot_ye)
+                     
             plt.xlabel("Number of epochs")
             plt.ylabel("Error")
             plt.title("Error")      
-            plt.xlim(0, opts["numepochs"]+1)      
-            plt.legend(loc="upper right")
+            plt.xlim(0, opts["numepochs"]+1)                  
+            plt.draw()
+            plt.pause(0.1)
+            
             
             plt.subplot(122)
-            plt.plot(plot_x,plot_yfrac,label = M[0] if i == 1 else "",color = 'b')
+            if len(M) < 2:
+                if i == 1:
+                    plt.plot(plot_x,plot_yfrac,label = M[0], color = 'b') 
+            if len(M) > 1:
+                if i == 1:
+                    [t,v] = plt.plot(plot_x,plot_yfrac) 
+                    plt.legend([t,v],["Training", "Validation"],loc="upper right")
+                else:
+                    plt.plot(plot_x,plot_yfrac) 
+                                
             plt.xlabel("Number of epochs")
             plt.ylabel("Misclassification rate")
             plt.title("Misclassification rate")
             plt.xlim(0, opts["numepochs"]+1)      
-            plt.legend(loc="upper right")
-            
             plt.draw()
-            plt.pause(0.01)
+            plt.pause(0.1)
             
         else:
             plt.xlabel("Number of epochs")
             plt.ylabel("Error")
             plt.title("Error")      
-            plt.plot(plot_x,plot_ye,label = M[0]if i == 1 else "",color = 'b')
+            plt.plot(plot_x,plot_ye,label = M if i == 1 else "",color = 'b')
             plt.xlim(0, opts["numepochs"]+1)        
             plt.legend(loc="upper right")
             plt.draw()
