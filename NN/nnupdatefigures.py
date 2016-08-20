@@ -46,17 +46,16 @@ def nnupdatefigures(nn,figureNo,L,opts,i):
             plt.ion()
         plt.figure(figureNo)     
         if nn.Output == "softmax":
-            plt.subplot(121)
+            ax = plt.subplot(121)
             if len(M) < 2:
                 if i == 1:
                     plt.plot(plot_x,plot_ye,label = M, color = 'b')
                     plt.legend(loc="upper right") 
             if len(M) > 1:
-                if i == 1:
-                    [t,v] = plt.plot(plot_x,plot_ye) 
-                    plt.legend([t,v],["Training", "Validation"],loc="upper right")
-                else:
-                    plt.plot(plot_x,plot_ye)
+                    ax.plot(plot_x[:,0],plot_ye[:,0],label= M[0],color = 'blue')
+                    ax.plot(plot_x[:,1],plot_ye[:,1],label= M[1],color = 'red') 
+                    plt.legend(M,loc="upper right")
+
                      
             plt.xlabel("Number of epochs")
             plt.ylabel("Error")
@@ -66,21 +65,19 @@ def nnupdatefigures(nn,figureNo,L,opts,i):
             plt.pause(0.1)
             
             
-            plt.subplot(122)
+            ax = plt.subplot(122)
             if len(M) < 2:
                 if i == 1:
                     plt.plot(plot_x,plot_yfrac,label = M[0], color = 'b') 
             if len(M) > 1:
-                if i == 1:
-                    [t,v] = plt.plot(plot_x,plot_yfrac) 
-                    plt.legend([t,v],["Training", "Validation"],loc="upper right")
-                else:
-                    plt.plot(plot_x,plot_yfrac) 
+                    ax.plot(plot_x[:,0],plot_ye[:,0],label= M[0],color = 'blue')
+                    ax.plot(plot_x[:,1],plot_ye[:,1],label= M[1],color = 'red') 
+                    plt.legend(M,loc="upper right")                
                                 
             plt.xlabel("Number of epochs")
             plt.ylabel("Misclassification rate")
             plt.title("Misclassification rate")
-            plt.xlim(0, opts["numepochs"]+1)      
+            plt.xlim(0, opts["numepochs"]+1)
             plt.draw()
             plt.pause(0.1)
             
