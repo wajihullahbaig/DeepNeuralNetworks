@@ -16,15 +16,10 @@ I hope you will enjoy using the code as much as I enjoyed translating it :)
 I have tried my best to keep the code in a more understanable way. I know there are various functions that could have been done far better and clean in a more pythonic way, but that does not serve the purpose of a clear code understanding. I have also tried my best to develop the code that is close to matlab in terms of accuracy.
 
  ## Translation notes
-Markup : 1. Random states for both Python and Matlab have been set using the 'twister' algorithm
+         1. Random states for both Python and Matlab have been set using the 'twister' algorithm
  	 2. For debugging the code, I have added a single line of code that runs Matlab/Pyhon in a sequential way.
  	 3. Some functions from Matlab like nnsetup() have been replaced by a constructor in Python like FFBONN.NN
  	 
-Markup : 1. A numbered list
-           1. A nested numbered list
-           2. Which is numbered
-          2. Which is numbered
-          3. 
 # Dependencies/Dev Tools/Platform
 	1- Anaconda 4.1.1
 	2- PyDev
