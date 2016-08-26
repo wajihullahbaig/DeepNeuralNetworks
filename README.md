@@ -17,7 +17,8 @@ I have tried my best to keep the code in a more understanable way. I know there 
 
         1. Random states for both Python and Matlab have been set using the 'twister' algorithm	
         2. For debugging the code, I have added a single line of code that runs Matlab/Pyhon in a sequential way.
-        3. Some functions from Matlab like nnsetup() have been replaced by a constructor in Python like FFBONN.NN
+        3. Some functions from Matlab like nnsetup() have been replaced by a constructor in Python like FFBPNN.NN
+        4. Collections are collections of data structures used by different classes. 
  	 
 # Dependencies/Dev Tools/Platform
 	1- Anaconda 4.1.1
