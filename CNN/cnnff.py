@@ -3,7 +3,7 @@ Created on Aug 28, 2016
 
 @author: Wajih-PC
 '''
-from CNN.CNN import Layers
+from CNN import Layers
 import numpy as np
 def cnnff(net,x):
     n = len(net.layers)

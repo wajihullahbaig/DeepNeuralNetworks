@@ -6,7 +6,7 @@ Created on Aug 28, 2016
 import sys
 from time import time
 import numpy as np
-from CNN import cnff
+from CNN import cnnff
 def cnntrain(net,x,y,opts):
     m = x.shape()[2]
     numbatches = m/opts["batchsize"]
@@ -24,7 +24,7 @@ def cnntrain(net,x,y,opts):
         for l in range (0,numbatches):
             batch_x = x[:,:,kk[l* batchsize  : (l+1) * batchsize]]
             batch_y = y[:,:,kk[l* batchsize  : (l+1) * batchsize]]
-            net = cnff(net,batch_x)
+            net = cnnff(net,batch_x)
     #===========================================================================    
     #         net = cnnbp(net,batch_y)
     #         net = cnnapplygrads(net,opts)

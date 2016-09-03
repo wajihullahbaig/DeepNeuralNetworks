@@ -6,7 +6,7 @@ Created on Aug 26, 2016
 
 from CNN import Layers
 import numpy as np
-class CNN:
+class CNNFFBP:
     # Define the deep layers        
     layers = [Layers.InputLayer(),Layers.ConvolutionalLayer(6,5),Layers.ScaleLayer(2),Layers.ConvolutionalLayer(12,5),Layers.ScaleLayer(2)]
     inputMaps = 1
