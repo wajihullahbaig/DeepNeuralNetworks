@@ -13,6 +13,8 @@ class CNN:
     mapsize = 0   
     ffB = None #Bias
     ffW = None #Weights
+    rL = 1*[None]
+    L = 0; # Loss
     def __init__(self,x,y):        
         self.mapsize =  np.asarray(np.shape(x[:,:,0]))
         for l in range(0,len(self.layers)):
@@ -29,7 +31,7 @@ class CNN:
                     for i in range(0,self.inputMaps):
                             # Ramdom initialization. Transpose it so that we have same sequence as in Matlab
                             self.layers[l].K[i,j] =  ((np.random.uniform(0,1,[self.layers[l].KernelSize,self.layers[l].KernelSize])-0.5)*2*np.sqrt(6/(fan_in+fan_out))).T                                        
-                    self.layers[l].B[0,j] = 0.0
+                    self.layers[l].B[j] = 0.0
                      
                 self.inputMaps = self.layers[l].OutputMaps
             
@@ -41,5 +43,4 @@ class CNN:
         fvnum = np.prod(self.mapsize,axis = 0) * self.inputMaps
         onum =  np.shape(y)[0]       
         self.ffB = np.zeros(shape = (onum,1),dtype = np.float64)
-        self.ffW = ((np.random.uniform(0,1,[fvnum,onum])-0.5)*2*np.sqrt(6/(onum+fvnum))).T       
-        
+        self.ffW = ((np.random.uniform(0,1,[fvnum,onum])-0.5)*2*np.sqrt(6/(onum+fvnum))).T           

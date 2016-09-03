@@ -16,6 +16,7 @@ class ConvolutionalLayer(Layer):
     KernelSize = 0
     K = {}     
     B = {}    
+    A = {}
     def __init__(self,outputMaps,kernelSize):
         self.OutputMaps = outputMaps
         self.KernelSize = kernelSize
