@@ -1,5 +1,5 @@
 import numpy as np
-from NN import FFBPNN
+from NN import NeuralNetwork
 from util import tanh_opt, sigm
 def nnff(nn,x,y):
     #NNFF performs a feed forward pass
