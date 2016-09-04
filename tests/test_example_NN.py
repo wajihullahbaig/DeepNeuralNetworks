@@ -9,7 +9,7 @@ sys.path.append('E:\RnD\Machine Learning\DNN\EclipseWorkSpace\DeepNeuralNetworks
 from data import importMat
 from util import zscore
 from util import normalize
-from NN import FFBPNN, nntrain,nntest
+from NN import NeuralNetwork, nntrain,nntest
 import numpy as np
 def test_example_NN():
     dataSet = importMat.loadMatFile()
@@ -34,7 +34,7 @@ def test_example_NN():
         
     # ex1 vanilla nerual net
     np.random.seed(1) # Setting the random seed so that the weights are generated same as in matlab code - default is twister algorithm        
-    nn = FFBPNN.NN(np.array([784, 100 ,10]))
+    nn = NeuralNetwork.NN(np.array([784, 100 ,10]))
     # numepochs = Number of full sweep through data
     # batchsize = Mean gradient step over this many samples
     options = {"numepochs":5,"batchsize":100,"plot":1}
@@ -46,7 +46,7 @@ def test_example_NN():
       
     # ex2 neural net with L2 weight decay
     np.random.seed(1) # Setting the random seed so that the weights are generated same as in matlab code - default is twister algorithm            
-    nn = FFBPNN.NN(np.array([784, 100 ,10]))
+    nn = NeuralNetwork.NN(np.array([784, 100 ,10]))
     nn.WeightPenaltyL2 = 1e-4
     options = {"numepochs":1,"batchsize":100,"plot":1}    
     nn,L = nntrain.nntrain(nn,train_x,train_y,options,None,None,2)
@@ -56,7 +56,7 @@ def test_example_NN():
       
     # ex3 nerual net with dropout    
     np.random.seed(1) # Setting the random seed so that the weights are generated same as in matlab code - default is twister algorithm            
-    nn = FFBPNN.NN(np.array([784, 100 ,10]))
+    nn = NeuralNetwork.NN(np.array([784, 100 ,10]))
     nn.DropoutFraction = 0.5
     nn,L = nntrain.nntrain(nn,train_x,train_y,options,None,None,3)
     er,bad = nntest.nntest(nn,test_x,test_y)
@@ -65,7 +65,7 @@ def test_example_NN():
       
     # ex4 nerual net with sigmoid activation function    
     np.random.seed(1) # Setting the random seed so that the weights are generated same as in matlab code - default is twister algorithm            
-    nn = FFBPNN.NN(np.array([784, 100 ,10]))
+    nn = NeuralNetwork.NN(np.array([784, 100 ,10]))
     nn.ActivationFunction = "sigm"
     nn.LearningRate = 1
     nn,L = nntrain.nntrain(nn,train_x,train_y,options,None,None,4)
@@ -75,7 +75,7 @@ def test_example_NN():
      
     # ex5 nerual net with softmax activation function and plotting functionality
     np.random.seed(1) # Setting the random seed so that the weights are generated same as in matlab code - default is twister algorithm            
-    nn = FFBPNN.NN(np.array([784, 100 ,10]))
+    nn = NeuralNetwork.NN(np.array([784, 100 ,10]))
     nn.Output = "softmax" #Use the softmax output
     options = {"numepochs":1,"batchsize":1000,"plot":1}    
     nn,L = nntrain.nntrain(nn,train_x,train_y,options,None,None,5)
@@ -91,7 +91,7 @@ def test_example_NN():
     vy = train_y[0:10000,:]
     ty = train_y[9999:-1,:]
     np.random.seed(1) # Setting the random seed so that the weights are generated same as in matlab code - default is twister algorithm            
-    nn = FFBPNN.NN(np.array([784, 100 ,10]))
+    nn = NeuralNetwork.NN(np.array([784, 100 ,10]))
     nn.Output = "softmax" #Use the softmax output
     options = {"numepochs":5,"batchsize":1000,"plot":1}    
     nn,L = nntrain.nntrain(nn,tx,ty,options,vx,vy,6)
