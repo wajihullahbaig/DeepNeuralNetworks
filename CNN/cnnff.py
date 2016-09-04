@@ -5,9 +5,11 @@ Created on Aug 28, 2016
 '''
 from CNN import Layers
 import numpy as np
+from scipy.ndimage import convolve
+from util import sigm
 def cnnff(net,x):
     n = len(net.layers)
-    net.layers[1].A[1] = x;
+    net.layers[0].A[0] = x[:];
     inputMaps = 1
     
     for l in range(1,n):
@@ -15,11 +17,31 @@ def cnnff(net,x):
             for j in range(0,net.layers[l].OutputMaps):
                 # Create a temp output map
                 # map shape 
-                t = [net.layers[l].KernelSize - 1 ,net.layers[l].KernelSize - 1, 0]
-                s = net.layers[l - 1].A[1].shape()
-                z = np.zeros(shape = s-t) 
+                t = np.asarray([net.layers[l].KernelSize - 1 ,net.layers[l].KernelSize - 1, 0])
+                s = np.asarray(net.layers[l - 1].A[0].shape)
+                z = np.zeros(shape = s-t,dtype = np.float64)
+                for i in range(0,inputMaps):                    
+                    # add a dimension to kernel as the data is in MxMxN
+                    kernel = np.expand_dims(net.layers[l].K[i,j],axis=2)
+                    valid = [slice(kernel.shape[0]//2, -kernel.shape[0]//2+1), slice(kernel.shape[1]//2, -kernel.shape[1]//2+1)]
+                    # Reproducing what convn(...) with 'valid' would give us in matlab
+                    convolutionResult =convolve(net.layers[l-1].A[i],kernel)[valid]                    
+                    z = np.add(z,convolutionResult)
+                # add bias, pass through nonlinearity
+                net.layers[l].A[j] = sigm.sigm(np.add(z,net.layers[l].B[j]))                              
                 
-            
-    
-    
+            # set number of input maps tp this layers number of output maps
+            inputMaps = net.layers[l].OutputMaps        
+        elif isinstance(net.layers[l],Layers.ScaleLayer):
+            # Downsample
+            for j in range(0,inputMaps):
+                kernel = np.true_divide(np.ones(shape = (net.layers[l].Scale,net.layers[l].Scale)),net.layers[l].Scale*net.layers[l].Scale)
+                kernel = np.expand_dims(kernel,axis=2)
+                z= None
+                z = convolve(net.layers[l-1].A[j],kernel)[1:,1:]
+                net.layers[l].A[j] = z[:: net.layers[l].Scale, :: net.layers[l].Scale,:];                
+    # Concatenate all end layer feature maps into vector
+    for j in range(0,len(net.layers[n-1].A)):
+        sa = net.layers[n-1].A[j].shape         
+        net.FV = np.reshape(net.layers[n-1].A[j], newshape =(sa[0]*sa[1], sa[2]))
     return net 
