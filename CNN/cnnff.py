@@ -42,6 +42,11 @@ def cnnff(net,x):
                 net.layers[l].A[j] = z[:: net.layers[l].Scale, :: net.layers[l].Scale,:];                
     # Concatenate all end layer feature maps into vector
     for j in range(0,len(net.layers[n-1].A)):
-        sa = net.layers[n-1].A[j].shape         
-        net.FV = np.reshape(net.layers[n-1].A[j], newshape =(sa[0]*sa[1], sa[2]))
+        sa = net.layers[n-1].A[j].shape    
+        if net.FV is None:
+            net.FV = np.reshape(net.layers[n-1].A[j], newshape =(sa[0]*sa[1], sa[2]))[:]
+        else:          
+            net.FV = np.append(net.FV,np.reshape(net.layers[n-1].A[j], newshape =(sa[0]*sa[1], sa[2])),axis = 0)   
+    # Feedforward into output perceptrons
+    net.O = sigm.sigm(np.dot(net.ffW,net.FV)+np.tile(net.ffB,(1,net.FV.shape[1])))   
     return net 

@@ -14,6 +14,7 @@ class CNN:
     ffB = None #Bias
     ffW = None #Weights
     FV = None # feature vector
+    O = None # Output perceptron
     rL = 1*[None]
     L = 0; # Loss
     def __init__(self,x,y):        
