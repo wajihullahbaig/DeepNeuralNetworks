@@ -12,8 +12,11 @@ This is where we define the convolutional neural network layers
 # by the layers
 class Layer:
     A = None
+    D = None
     def __init__(self):
         self.A = {}
+        self.D = {}
+    
     
 class InputLayer(Layer):
     def __init__(self):        
@@ -24,6 +27,9 @@ class ConvolutionalLayer(Layer):
     KernelSize = 0
     K = {}     
     B = {}    
+    dK = {}
+    dB = {}
+    
     def __init__(self,outputMaps,kernelSize):
         Layer.__init__(self)
         self.OutputMaps = outputMaps

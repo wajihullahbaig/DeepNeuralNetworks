@@ -6,7 +6,7 @@ Created on Aug 28, 2016
 import sys
 from time import time
 import numpy as np
-from CNN import cnnff
+from CNN import cnnff,cnnbp,cnnapplygrads
 def cnntrain(net,x,y,opts):
     m = x.shape[2]
     numbatches = int(m/opts["batchsize"])
@@ -25,13 +25,10 @@ def cnntrain(net,x,y,opts):
             batch_x = x[:,:,kk[l* batchsize  : (l+1) * batchsize]]
             batch_y = y[:,kk[l* batchsize  : (l+1) * batchsize]]
             net = cnnff.cnnff(net,batch_x)
-    #===========================================================================    
-    #         net = cnnbp(net,batch_y)
-    #         net = cnnapplygrads(net,opts)
-    #         if net.rL[0] is None:
-    #             net.rL[0] -  net.L;
-    #             net.rL.insert(1,0.99 * net.rL(-1) + 0.01 * net.L)
-    #         else:  
-    #             net.rL.insert(n+1,0.99 * net.rL(-1) + 0.01 * net.L)
-    # return net
-    #===========================================================================
+            net = cnnbp.cnnbp(net,batch_y)
+            net = cnnapplygrads.cnnapplygrads(net,opts)
+    
+            if net.rL[0] is None:
+                net.rL.insert(0,net.L)
+            else:  
+                net.rL.insert(n+1,0.99 * net.rL(-1) + 0.01 * net.L)    
