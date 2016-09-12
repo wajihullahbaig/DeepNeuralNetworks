@@ -13,22 +13,24 @@ def cnntrain(net,x,y,opts):
     batchsize = opts["batchsize"]
     numepochs = opts["numepochs"]
     if numbatches % 1 != 0:
-        sys.exit("numbatches not integer")
-    n = 0
-    L = np.zeros(shape=(numepochs*numbatches,1),dtype=np.float64)
+        sys.exit("numbatches not integer")    
+ 
     for i in range(0, opts["numepochs"]):
         print("epoch " , i+1 ,"/" , opts["numepochs"])
         tic = time()
         kk = np.random.permutation(range(m)) # For testing, go random
         #kk = np.arange(0,m,1); # For debugging, go sequentially
         for l in range (0,numbatches):
+            print ("Batch number:"+str(l)+" out of :"+str(numbatches))
             batch_x = x[:,:,kk[l* batchsize  : (l+1) * batchsize]]
             batch_y = y[:,kk[l* batchsize  : (l+1) * batchsize]]
             net = cnnff.cnnff(net,batch_x)
             net = cnnbp.cnnbp(net,batch_y)
             net = cnnapplygrads.cnnapplygrads(net,opts)
-    
-            if net.rL[0] is None:
+            if not net.rL:
                 net.rL.insert(0,net.L)
-            else:  
-                net.rL.insert(n+1,0.99 * net.rL(-1) + 0.01 * net.L)    
+            else:    
+                net.rL.append(0.99 * net.rL[-1] + 0.01 * net.L)    
+        toc = time()
+        t = toc-tic
+        print("epoch " , i+1 ,"/" , opts["numepochs"], ". Took " ,t, " seconds.")

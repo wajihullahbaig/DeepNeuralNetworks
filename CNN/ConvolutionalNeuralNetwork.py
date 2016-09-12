@@ -18,7 +18,7 @@ class CNN:
     FV = None # feature vector
     O = None # Output perceptron
     E = None # Error
-    rL = 1*[None]
+    rL = []
     L = 0; # Loss
     oD = None
     fVD = None
@@ -38,7 +38,7 @@ class CNN:
                     fan_in = self.inputMaps * self.layers[l].KernelSize*self.layers[l].KernelSize
                     for i in range(0,self.inputMaps):
                             # Ramdom initialization. Transpose it so that we have same sequence as in Matlab
-                            self.layers[l].K[i,j] =  ((np.random.uniform(0,1,[self.layers[l].KernelSize,self.layers[l].KernelSize])-0.5)*2*np.sqrt(6/(fan_in+fan_out))).T                                        
+                            self.layers[l].K[i,j] =  ((np.random.uniform(0,1,[self.layers[l].KernelSize,self.layers[l].KernelSize])-0.5)*2*np.sqrt(6/(fan_in+fan_out))).T                            
                     self.layers[l].B[j] = 0.0
                      
                 self.inputMaps = self.layers[l].OutputMaps

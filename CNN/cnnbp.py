@@ -60,8 +60,9 @@ def cnnbp(net,y):
         if isinstance(net.layers[l], Layers.ConvolutionalLayer):
             for j in range(0,len(net.layers[l].A)):
                 for i in range(0,len(net.layers[l-1].A)):
-                    # See later that if we need to remove the singleton dimension
                     net.layers[l].dK[i,j] =fftconvolve(np.flipud(net.layers[l-1].A[i]),net.layers[l].D[j],mode='valid')
+                    # Remove the singleton dimension
+                    net.layers[l].dK[i,j] = np.squeeze(net.layers[l].dK[i,j])                    
                 net.layers[l].dB[j] = np.sum(net.layers[l].D[j])/net.layers[l].D[j].shape[2]    
     
     net.dffW = np.dot(net.oD,net.FV.T) / net.oD.shape[1]

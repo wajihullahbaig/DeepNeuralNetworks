@@ -20,9 +20,10 @@ def cnnff(net,x):
                 t = np.asarray([net.layers[l].KernelSize - 1 ,net.layers[l].KernelSize - 1, 0])
                 s = np.asarray(net.layers[l - 1].A[0].shape)
                 z = np.zeros(shape = s-t,dtype = np.float64)
-                for i in range(0,inputMaps):                    
+                for i in range(0,inputMaps):    
                     # add a dimension to kernel as the data is in MxMxN
-                    kernel = np.expand_dims(net.layers[l].K[i,j],axis=2)
+                    kernel = net.layers[l].K[i,j].copy()
+                    kernel = np.expand_dims(kernel,axis=2)
                     valid = [slice(kernel.shape[0]//2, -kernel.shape[0]//2+1), slice(kernel.shape[1]//2, -kernel.shape[1]//2+1)]
                     # Reproducing what convn(...) with 'valid' would give us in matlab
                     convolutionResult =convolve(net.layers[l-1].A[i],kernel)[valid]                    

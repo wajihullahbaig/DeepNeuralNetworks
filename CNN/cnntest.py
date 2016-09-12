@@ -11,5 +11,5 @@ def cnntest(net, x, y):
     h = net.O.argmax(axis = 1)
     a = y.argmax(axis = 1)  
     bad = np.where(h  != a)
-    er = len(bad) / y.shape[1];
-
+    err = len(bad) / y.shape[1];
+    return err,bad
