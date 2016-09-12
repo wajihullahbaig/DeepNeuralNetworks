@@ -8,8 +8,8 @@ import numpy as np
 def cnntest(net, x, y):
     #  feedforward
     net = cnnff.cnnff(net, x)
-    h = net.O.argmax(axis = 1)
-    a = y.argmax(axis = 1)  
-    bad = np.where(h  != a)
+    h = net.O.argmax(axis = 0)
+    a = y.argmax(axis = 0)  
+    bad = np.where(h  != a)[0]
     err = len(bad) / y.shape[1];
     return err,bad

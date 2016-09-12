@@ -29,8 +29,8 @@ def cnntrain(net,x,y,opts):
             net = cnnapplygrads.cnnapplygrads(net,opts)
             if not net.rL:
                 net.rL.insert(0,net.L)
-            else:    
-                net.rL.append(0.99 * net.rL[-1] + 0.01 * net.L)    
+            net.rL.append(0.99 * net.rL[-1] + 0.01 * net.L)    
         toc = time()
         t = toc-tic
         print("epoch " , i+1 ,"/" , opts["numepochs"], ". Took " ,t, " seconds.")
+    return net
