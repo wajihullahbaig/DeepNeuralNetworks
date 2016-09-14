@@ -13,8 +13,6 @@ This is where we define the convolutional neural network layers
 class Layer:
    
     def __init__(self): 
-        A = None
-        D = None
         self.A = {}
         self.D = {}
     
