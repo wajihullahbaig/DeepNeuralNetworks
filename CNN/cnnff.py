@@ -10,9 +10,9 @@ from util import sigm
 
 def cnnff(net,x):
     n = len(net.layers)
-    net.layers[0].A[0] = x[:];
+    net.layers[0].A[0] = x.copy();
     inputMaps = 1
-    
+    lowValueThreshold = 1e-10
     for l in range(1,n):
         if isinstance(net.layers[l],Layers.ConvolutionalLayer):
             for j in range(0,net.layers[l].OutputMaps):
@@ -26,6 +26,9 @@ def cnnff(net,x):
                     # add a dimension to kernel as the data is in MxMxN                    
                     kernel = np.expand_dims(kernel,axis=2)
                     convolutionResult = fftconvolve(net.layers[l-1].A[i],kernel,mode = 'valid')
+                    # Zero out very small values, this helps in avoiding overflow error in sigm function in util module
+                    lowValIndices = [convolutionResult<lowValueThreshold]
+                    convolutionResult[lowValIndices] = 0
                     z = np.add(z,convolutionResult)
                 # add bias, pass through nonlinearity
                 net.layers[l].A[j] = sigm.sigm(np.add(z,net.layers[l].B[j]))                              
@@ -39,15 +42,19 @@ def cnnff(net,x):
                 kernel = np.expand_dims(kernel,axis=2)
                 z= None
                 z = fftconvolve(net.layers[l-1].A[j],kernel,mode = 'valid')
-                net.layers[l].A[j] = z[:: net.layers[l].Scale, :: net.layers[l].Scale,:];                
+                # Zero out very small values
+                lowValIndices = [z<lowValueThreshold]
+                z[lowValIndices] = 0
+                net.layers[l].A[j] = z[:: net.layers[l].Scale, :: net.layers[l].Scale,:];
+
     # Concatenate all end layer feature maps into vector
     net.FV = None
     for j in range(0,len(net.layers[n-1].A)):
         sa = net.layers[n-1].A[j].shape    
         if net.FV is None:
-            net.FV = np.reshape(net.layers[n-1].A[j], newshape =(sa[0]*sa[1], sa[2]))[:]
+            net.FV = np.reshape(net.layers[n-1].A[j], newshape =(sa[0]*sa[1], sa[2]),order="F")[:]
         else:          
-            net.FV = np.append(net.FV,np.reshape(net.layers[n-1].A[j], newshape =(sa[0]*sa[1], sa[2])),axis = 0)   
+            net.FV = np.append(net.FV,np.reshape(net.layers[n-1].A[j], newshape =(sa[0]*sa[1], sa[2]),order="F"),axis = 0)[:]   
     # Feedforward into output perceptrons
     net.O = sigm.sigm(np.dot(net.ffW,net.FV)+np.tile(net.ffB,(1,net.FV.shape[1])))
        
