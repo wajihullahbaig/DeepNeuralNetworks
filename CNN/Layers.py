@@ -11,9 +11,10 @@ This is where we define the convolutional neural network layers
 # Missing a call to Layer.__init__(self) cause the single copy of 'A' to be shared 
 # by the layers
 class Layer:
-    A = None
-    D = None
-    def __init__(self):
+   
+    def __init__(self): 
+        A = None
+        D = None
         self.A = {}
         self.D = {}
     
@@ -23,22 +24,21 @@ class InputLayer(Layer):
         Layer.__init__(self)
 
 class ConvolutionalLayer(Layer):
-    OutputMaps = 0
-    KernelSize = 0
-    K = {}     
-    B = {}    
-    dK = {}
-    dB = {}
-    
+        
     def __init__(self,outputMaps,kernelSize):
         Layer.__init__(self)
+        self.OutputMaps = 0
+        self.KernelSize = 0
+        self.K = {}     
+        self.B = {}    
+        self.dK = {}
+        self.dB = {}
         self.OutputMaps = outputMaps
         self.KernelSize = kernelSize
 
 class ScaleLayer(Layer):
-    Scale = 0
-    B = {}
     def __init__(self,scale):
-        Layer.__init__(self)
+        Layer.__init__(self)        
+        self.B = {}    
         self.Scale = scale
 
