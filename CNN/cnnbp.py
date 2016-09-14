@@ -6,6 +6,7 @@ Created on Sep 11, 2016
 import numpy as np
 from scipy.signal import fftconvolve
 from CNN import Layers
+from util import flipall
 
 def cnnbp(net,y):
     
@@ -18,11 +19,11 @@ def cnnbp(net,y):
     net.L = 0.5* np.true_divide(np.sum(np.power(net.E,2)),net.E.shape[1])
     
     # backpropagation deltas
-    net.oD = np.multiply(net.E,np.multiply(net.O,(1-net.O))) # Output delta 
+    net.oD = net.E*net.O*(1-net.O) # Output delta 
     net.fVD = np.dot(net.ffW.T,net.oD) # feature vector delta
     # Only convolution layers have sigm function
     if isinstance(net.layers[n-1], Layers.ConvolutionalLayer):
-        net.fVD = np.dot(net.fVD,np.dot(net.fV,1-net.fV))
+        net.fVD = net.fVD*net.fV*(1-net.fV)
     
     #Reshape feature vector deltas into output map style
     
@@ -41,7 +42,7 @@ def cnnbp(net,y):
                 t1 = net.layers[l].A[j] * (1-net.layers[l].A[j])
                 t2 = np.repeat(net.layers[l + 1].D[j], net.layers[l + 1].Scale,0)
                 t2 = np.repeat(t2, net.layers[l + 1].Scale,1)
-                net.layers[l].D[j] = t2*(net.layers[l + 1].Scale*net.layers[l + 1].Scale)
+                net.layers[l].D[j] = t1*t2*(net.layers[l + 1].Scale*net.layers[l + 1].Scale)
         elif isinstance(net.layers[l], Layers.ScaleLayer):
             for i in range(0,len(net.layers[l].A)):
                 z = np.zeros(net.layers[l].A[0].shape)
@@ -60,7 +61,8 @@ def cnnbp(net,y):
         if isinstance(net.layers[l], Layers.ConvolutionalLayer):
             for j in range(0,len(net.layers[l].A)):
                 for i in range(0,len(net.layers[l-1].A)):
-                    net.layers[l].dK[i,j] =fftconvolve(np.flipud(net.layers[l-1].A[i]),net.layers[l].D[j],mode='valid')
+                    temp = flipall.flipall(net.layers[l-1].A[i])
+                    net.layers[l].dK[i,j] =fftconvolve(temp,net.layers[l].D[j],mode='valid')
                     # Remove the singleton dimension
                     net.layers[l].dK[i,j] = np.squeeze(net.layers[l].dK[i,j])                    
                 net.layers[l].dB[j] = np.sum(net.layers[l].D[j])/net.layers[l].D[j].shape[2]    

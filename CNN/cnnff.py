@@ -5,8 +5,9 @@ Created on Aug 28, 2016
 '''
 from CNN import Layers
 import numpy as np
-from scipy.ndimage import convolve
+from scipy.signal import fftconvolve
 from util import sigm
+
 def cnnff(net,x):
     n = len(net.layers)
     net.layers[0].A[0] = x[:];
@@ -21,12 +22,10 @@ def cnnff(net,x):
                 s = np.asarray(net.layers[l - 1].A[0].shape)
                 z = np.zeros(shape = s-t,dtype = np.float64)
                 for i in range(0,inputMaps):    
-                    # add a dimension to kernel as the data is in MxMxN
                     kernel = net.layers[l].K[i,j].copy()
+                    # add a dimension to kernel as the data is in MxMxN                    
                     kernel = np.expand_dims(kernel,axis=2)
-                    valid = [slice(kernel.shape[0]//2, -kernel.shape[0]//2+1), slice(kernel.shape[1]//2, -kernel.shape[1]//2+1)]
-                    # Reproducing what convn(...) with 'valid' would give us in matlab
-                    convolutionResult =convolve(net.layers[l-1].A[i],kernel)[valid]                    
+                    convolutionResult = fftconvolve(net.layers[l-1].A[i],kernel,mode = 'valid')
                     z = np.add(z,convolutionResult)
                 # add bias, pass through nonlinearity
                 net.layers[l].A[j] = sigm.sigm(np.add(z,net.layers[l].B[j]))                              
@@ -39,7 +38,7 @@ def cnnff(net,x):
                 kernel = np.true_divide(np.ones(shape = (net.layers[l].Scale,net.layers[l].Scale)),net.layers[l].Scale*net.layers[l].Scale)
                 kernel = np.expand_dims(kernel,axis=2)
                 z= None
-                z = convolve(net.layers[l-1].A[j],kernel)[1:,1:]
+                z = fftconvolve(net.layers[l-1].A[j],kernel,mode = 'valid')
                 net.layers[l].A[j] = z[:: net.layers[l].Scale, :: net.layers[l].Scale,:];                
     # Concatenate all end layer feature maps into vector
     net.FV = None
