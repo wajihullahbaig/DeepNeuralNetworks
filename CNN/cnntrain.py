@@ -18,8 +18,8 @@ def cnntrain(net,x,y,opts):
     for i in range(0, opts["numepochs"]):
         print("epoch " , i+1 ,"/" , opts["numepochs"])
         tic = time()
-        #kk = np.random.permutation(range(m)) # For testing, go random
-        kk = np.arange(0,m,1); # For debugging, go sequentially
+        kk = np.random.permutation(range(m)) # For testing, go random
+        #kk = np.arange(0,m,1); # For debugging, go sequentially
         for l in range (0,numbatches):
             print ("Batch number:"+str(l)+" out of :"+str(numbatches))
             batch_x = x[:,:,kk[l* batchsize  : (l+1) * batchsize]]
