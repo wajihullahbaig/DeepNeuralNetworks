@@ -49,7 +49,7 @@ With epochs = 1,  and batches = 50, twister algorithm randomization with seed = 
 | CNN                            | Python          | Matlab   |
 | ------------------------------ |:---------------:| --------:|
 | 				                 | 0.1256          | 0.1229   |
-|--------------------------------|----------------------------|
+|                                |                            |
 | Network Structure              | 
 |--------------------------------|
 | C: OuputMaps=6, kernel size=5  |
