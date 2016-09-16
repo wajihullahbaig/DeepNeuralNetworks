@@ -10,6 +10,6 @@ def cnntest(net, x, y):
     net = cnnff.cnnff(net, x)
     h = net.O.argmax(axis = 0)
     a = y.argmax(axis = 0)  
-    bad = np.where(h  != a)[0]
+    bad = np.where(h[:,None]  != a[:,None])[0]
     err = len(bad) / y.shape[1];
     return err,bad
