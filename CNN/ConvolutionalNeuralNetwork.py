@@ -15,14 +15,13 @@ class CNN:
     ffW = None #Weights
     dffB = None 
     dffW = None
-    FV = None # feature vector
+    fV = None # feature vector
     O = None # Output perceptron
     E = None # Error
     rL = []
     L = 0; # Loss
     oD = None
     fVD = None
-    fV = None
     def __init__(self,x,y):        
         self.mapsize =  np.asarray(np.shape(x[:,:,0]))
         for l in range(0,len(self.layers)):
