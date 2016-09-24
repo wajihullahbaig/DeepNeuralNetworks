@@ -24,7 +24,7 @@ def test_example_NN():
                 train_y = train_y
             elif key == "test_x":
                 test_x = dataSet[key]
-                test_x = test_x/255
+                test_x = test_x/255.0
             elif key == "test_y":
                 test_y = dataSet[key]
                 test_y = test_y            
