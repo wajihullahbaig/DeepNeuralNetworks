@@ -19,7 +19,7 @@ class RBM:
 class DBN:
     def __init__(self,x,dbnSizes,options):
         totalRBMs = len(dbnSizes)
-        self.RBM = [ RBM() for i in range(totalRBMs)]
+        self.RBM = [ RBM() for i in range(0,totalRBMs)]
         self.dbnSizes = x.shape[1]
         self.dbnSizes = np.append(self.dbnSizes,dbnSizes)
         for u in range(0,totalRBMs):

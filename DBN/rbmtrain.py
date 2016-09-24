@@ -3,7 +3,7 @@ Created on Sep 24, 2016
 
 @author: Wajih-PC
 '''
-from util import sigmrnd
+from util import sigmrnd,sigm
 import numpy as np
 def rbmtrain(rbm, x, opts):
     assert(np.all(isinstance(i, float) for i in x)), "x must be a float"
@@ -23,7 +23,7 @@ def rbmtrain(rbm, x, opts):
             v1 = batch.copy();
             h1 = sigmrnd.sigmrnd(np.tile(rbm.C.T, (batchsize, 1))+np.dot(v1,rbm.W.T))
             v2 = sigmrnd.sigmrnd(np.tile(rbm.B.T, (batchsize, 1))+np.dot(h1,rbm.W))
-            h2 = sigmrnd.sigmrnd(np.tile(rbm.C.T, (batchsize, 1))+np.dot(v2,rbm.W.T))
+            h2 = sigm.sigm(np.tile(rbm.C.T, (batchsize, 1))+np.dot(v2,rbm.W.T))
             
             c1 = np.dot(h1.T , v1)
             c2 = np.dot(h2.T , v2)
@@ -39,5 +39,5 @@ def rbmtrain(rbm, x, opts):
             
             err = err + np.sum(np.power(v1 - v2 , 2)) / batchsize
         
-        print("epoch " +str(i) +"/" +str(opts.numepochs) + ". Average reconstruction error is: " +str(err / numbatches))
-            
+        print("epoch " +str(i) +"/" +str(opts["numepochs"]+1) + ". Average reconstruction error is: " +str(err / numbatches))
+    return rbm       
