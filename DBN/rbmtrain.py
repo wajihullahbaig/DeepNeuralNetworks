@@ -15,8 +15,8 @@ def rbmtrain(rbm, x, opts):
     assert(numbatches%1 == 0), "numbatches not integer"
  
     for i  in range(0 , opts["numepochs"]):
-        kk = np.random.permutation(range(m)) # For testing, go random
-        #kk = np.arange(0,m,1); # For debugging, go sequentially
+        #kk = np.random.permutation(range(m)) # For testing, go random
+        kk = np.arange(0,m,1); # For debugging, go sequentially
         err = 0
         for l in range(0 , numbatches):
             batch = x[kk[l* batchsize  : (l+1) * batchsize], :]            
@@ -28,10 +28,10 @@ def rbmtrain(rbm, x, opts):
             c1 = np.dot(h1.T , v1)
             c2 = np.dot(h2.T , v2)
 
-            rbm.vW = np.dot(rbm.Momentum , rbm.vW) + rbm.Alpha * (c1 - c2)     / float(batchsize);
+            rbm.vW = np.add(rbm.Momentum * rbm.vW , rbm.Alpha * (c1 - c2)     / float(batchsize))
             # Add a singleton dimension after sum
-            rbm.vB = np.dot(rbm.Momentum , rbm.vB) + rbm.Alpha * sum(v1 - v2,0)[:,None] / float(batchsize);
-            rbm.vC = np.dot(rbm.Momentum , rbm.vC) + rbm.Alpha * sum(h1 - h2,0)[:,None] / float(batchsize);
+            rbm.vB = np.add(rbm.Momentum * rbm.vB , rbm.Alpha * sum(v1 - v2,0).T[:,None] / float(batchsize))
+            rbm.vC = np.add(rbm.Momentum * rbm.vC , rbm.Alpha * sum(h1 - h2,0).T[:,None] / float(batchsize))
 
             rbm.W = rbm.W + rbm.vW;
             rbm.B = rbm.B + rbm.vB;
