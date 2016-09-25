@@ -15,8 +15,8 @@ def rbmtrain(rbm, x, opts):
     assert(numbatches%1 == 0), "numbatches not integer"
  
     for i  in range(0 , opts["numepochs"]):
-        #kk = np.random.permutation(range(m)) # For testing, go random
-        kk = np.arange(0,m,1); # For debugging, go sequentially
+        kk = np.random.permutation(range(m)) # For testing, go random
+        #kk = np.arange(0,m,1); # For debugging, go sequentially
         err = 0
         for l in range(0 , numbatches):
             batch = x[kk[l* batchsize  : (l+1) * batchsize], :]            
