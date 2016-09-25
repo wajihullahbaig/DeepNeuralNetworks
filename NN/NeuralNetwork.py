@@ -9,41 +9,32 @@ layers, architecture being a n x 1 vector of layer sizes e.g. [784 100 10]
 from NN import Collections as collections
 import numpy as np
 class NN:
-    Size   = None
-    N      = None    
-    ActivationFunction               = 'tanh_opt';   #  Activation functions of hidden layers: 'sigm' (sigmoid) or 'tanh_opt' (optimal tanh).
-    LearningRate                     = 2;            #  learning rate Note: typically needs to be lower when using 'sigm' activation function and non-normalized inputs.
-    Momentum                         = 0.5;          #  Momentum
-    ScalingLearningRate              = 1;            #  Scaling factor for the learning rate (each epoch)
-    WeightPenaltyL2                  = 0;            #  L2 regularization
-    NonSparsityPenalty               = 0;            #  Non sparsity penalty
-    SparsityTarget                   = 0.05;         #  Sparsity target
-    InputZeroMaskedFraction          = 0;            #  Used for Denoising AutoEncoders
-    DropoutFraction                  = 0;            #  Dropout level (http://www.cs.toronto.edu/~hinton/absps/dropout.pdf)
-    Testing                          = False;            #  Internal variable. nntest sets this to one.
-    Output                           = 'sigm'
-    DropOutMask                      = None;
-    DW = None      
-    W = None
-    VW = None
-    P = None
-    A = None #activations
-    E = None #Error
-    L = None #Loss
     def __init__(self,architecture):
+        self.ActivationFunction               = 'tanh_opt';   #  Activation functions of hidden layers: 'sigm' (sigmoid) or 'tanh_opt' (optimal tanh).
+        self.LearningRate                     = 2;            #  learning rate Note: typically needs to be lower when using 'sigm' activation function and non-normalized inputs.
+        self.Momentum                         = 0.5;          #  Momentum
+        self.ScalingLearningRate              = 1;            #  Scaling factor for the learning rate (each epoch)
+        self.WeightPenaltyL2                  = 0;            #  L2 regularization
+        self.NonSparsityPenalty               = 0;            #  Non sparsity penalty
+        self.SparsityTarget                   = 0.05;         #  Sparsity target
+        self.InputZeroMaskedFraction          = 0;            #  Used for Denoising AutoEncoders
+        self.DropoutFraction                  = 0;            #  Dropout level (http://www.cs.toronto.edu/~hinton/absps/dropout.pdf)
+        self.Testing                          = False;            #  Internal variable. nntest sets this to one.
+        self.Output                           = 'sigm'
+        self.DropOutMask                      = None;
         self.Size = architecture
         self.N =(self.Size).size
-        totalLayers = len(range(1,self.N))
+        self.TotalLayers = len(range(1,self.N))
         #Empty allocations
-        self.W = [None for i in range(totalLayers)]
-        self.VW = [None for i in range(totalLayers) ]
-        self.P = [None for i in range(totalLayers+1)]
-        self.DW = [None for i in range(totalLayers+1)]
-        self.A = [None for i in range(totalLayers+1)]
+        self.W = [None for i in range(self.TotalLayers)]
+        self.VW = [None for i in range(self.TotalLayers) ]
+        self.P = [None for i in range(self.TotalLayers+1)]
+        self.DW = [None for i in range(self.TotalLayers+1)]
+        self.A = [None for i in range(self.TotalLayers+1)]
         self.E = None
         self.L = None
-        self.DropOutMask = [None for i in range(totalLayers+1)]
-        for i in range(1,totalLayers+1):
+        self.DropOutMask = [None for i in range(self.TotalLayers+1)]
+        for i in range(1,self.TotalLayers+1):
             #Weights and weight momentums
             rows = self.Size[i]
             cols = self.Size[i-1]
