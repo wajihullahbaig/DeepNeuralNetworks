@@ -36,6 +36,7 @@ It is evident that that both are close from following tables that accuracies are
 With epochs = 1,  batches = 100, total batches = 600
 
 (Full Batch Errors) 
+
 | Neural Networks        | Python          | Matlab   |
 | ---------------------- |:---------------:| --------:|
 | Tanh                   | 0.071304        | 0.070366 | 
