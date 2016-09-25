@@ -35,7 +35,6 @@ def scaledimage(W, pixwidth=1, ax=None, grayscale=True):
 
     ax.xaxis.set_major_locator(MT.NullLocator())
     ax.yaxis.set_major_locator(MT.NullLocator())
-    ax.draw()
     return ax
 
 #===============================================================================
