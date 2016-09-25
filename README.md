@@ -30,11 +30,12 @@ I have tried my best to keep the code in a more understanable way. I know there 
 	6- Python 3.5
 
 # Accuracy comparison (Python vs Matlab)
-The following table shows the full batch errors produced by Python and Matlab. It is evident that that both are close 
-in terms of accuracy.  
+It is evident that that both are close from following tables that accuracies are very close
 
-With epochs = 1,  and batches = 100 
 
+With epochs = 1,  batches = 100, total batches = 600
+
+(Full Batch Errors) 
 | Neural Networks        | Python          | Matlab   |
 | ---------------------- |:---------------:| --------:|
 | Tanh                   | 0.071304        | 0.070366 | 
@@ -44,7 +45,7 @@ With epochs = 1,  and batches = 100
 | Softmax		         | 0.246335        | 0.385170 |
 
 
-With epochs = 1,  and batches = 50, twister algorithm randomization with seed = 1 
+With epochs = 1,  and batches = 50, total batches = 1200  
 
 | CNN                            | Python          | Matlab   |
 | ------------------------------ |:---------------:| --------:|
@@ -56,3 +57,14 @@ With epochs = 1,  and batches = 50, twister algorithm randomization with seed = 
 | S: Scale =2        			 |
 | C: OuputMaps=12, kernel size=5 | 
 | S: Scale =2                    |  
+
+With epochs = 1,  and batches = 100, total batches = 600  
+
+| DBN                            | Python        | Matlab     |
+| ------------------------------ |:-------------:| ----------:|
+| size = 100	                 |    Reconstruction Error    |	
+|                                |  66.15        | 66.2       |
+| size = (100,100)               |    Reconstruction Error    |
+|                                |  10.93        | 10.97      | 
+| Unfolded to NN                 |    Full Batch Error        |	 					             
+|								 |	0.0667		 | 0.067      |	
