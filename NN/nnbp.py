@@ -29,21 +29,21 @@ def nnbp(nn):
             t2 = 1/(1.7159*1.7159)
             d_act = t1*(1-(t2*np.power(nn.A[i],2)))
     
-    if nn.NonSparsityPenalty > 0:
-        pass        
-    # Backpropagate first derivatives
-    if (i+1) == (n-1): #In this case in d[n-1] there is no bias term to be removed
-        sE = np.full((d[i+1].shape[0],nn.W[i].shape[1]),sparsityError,dtype = np.float64)
-        d[i] = np.multiply(np.add(np.dot(d[i+1],nn.W[i]),sE),d_act)
-    else: # In this case in d[i] the bias term has to be removed
-        temp = d[i+1][:,1:]
-        d[i] = np.multiply(np.dot(temp,nn.W[i]),d_act)+sparsityError
-        
-    if nn.DropoutFraction > 0:
-        resized = np.ones([nn.DropOutMask[i].shape[0],nn.DropOutMask[i].shape[1]+1], dtype=np.float64)
-        resized[:,1:] = nn.DropOutMask[i]
-        d[i] = np.multiply(d[i],resized)
-    #temp[:,1:] = np.copy(x)
+        if nn.NonSparsityPenalty > 0:
+            pass        
+        # Backpropagate first derivatives
+        if (i+1) == (n-1): #In this case in d[n-1] there is no bias term to be removed
+            sE = np.full((d[i+1].shape[0],nn.W[i].shape[1]),sparsityError,dtype = np.float64)
+            d[i] = np.multiply(np.add(np.dot(d[i+1],nn.W[i]),sE),d_act)
+        else: # In this case in d[i] the bias term has to be removed
+            temp = d[i+1][:,1:]
+            d[i] = np.multiply(np.dot(temp,nn.W[i]),d_act)+sparsityError
+            
+        if nn.DropoutFraction > 0:
+            resized = np.ones([nn.DropOutMask[i].shape[0],nn.DropOutMask[i].shape[1]+1], dtype=np.float64)
+            resized[:,1:] = nn.DropOutMask[i]
+            d[i] = np.multiply(d[i],resized)
+        #temp[:,1:] = np.copy(x)
     
     # Allocate space for activation, error and loss
     # Since matlab allows structs to have cells/arrays etc on the fly, 
