@@ -26,8 +26,9 @@ def visualize(X, mm, s1, s2):
         x=0;
         y=0;
         for i in range (0,N):
-            # Add singleton dimension to X
-            im = np.reshape(X[:,i][:,None],(s1,s2)).T
+            # Add singleton dimension to im
+            im = np.reshape(X[:,i][:,None],(s1,s2))
+            #scaledimage(im.T)
             a[int(x*s2+x) : int(x*s2+s2+x), int(y*s1+y) : int(y*s1+s1+y)]=im[:,:]
             x=x+1;
             if x>=num:
