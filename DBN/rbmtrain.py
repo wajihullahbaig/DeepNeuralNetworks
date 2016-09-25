@@ -39,5 +39,5 @@ def rbmtrain(rbm, x, opts):
             
             err = err + np.sum(np.power(v1 - v2 , 2)) / batchsize
         
-        print("epoch " +str(i) +"/" +str(opts["numepochs"]+1) + ". Average reconstruction error is: " +str(err / numbatches))
+        print("epoch " +str(i+1) +"/" +str(opts["numepochs"]) + ". Average reconstruction error is: " +str(err / numbatches))
     return rbm       
