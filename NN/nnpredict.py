@@ -4,7 +4,6 @@ Created on Jun 13, 2016
 @author: Wajih-PC
 '''
 import numpy as np
-import operator as op
 from NN import nnff
 def nnpredict(nn,x):
     # NEEDS FIXING
