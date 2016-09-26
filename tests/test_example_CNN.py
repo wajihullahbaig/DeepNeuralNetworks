@@ -42,7 +42,7 @@ def test_example_CNN():
     plt.figure()
     plt.plot(cnn.rL)   
     plt.show()
-    assert (err < 0.12),"Too big error"
+    assert err < 0.12,"Too big error"
     print ("test_example_CNN completed")
     input("Press [enter] to continue.") 
 test_example_CNN()      
