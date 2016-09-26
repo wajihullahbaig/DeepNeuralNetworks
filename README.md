@@ -1,10 +1,18 @@
 # DeepNeuralNetworks
-# This is currently a work in progress. I will be comitting code as I keep developing them.
 
 Python based Deep Neural Network code set - A "copy-paste" effort from Matlab  (rasmusbergpalm matlab code) to Python.
 I have been learning about Python and Deep Learning. To fully understand the inners workings of Deep Neural Networks, 
-I decided to translate the Matlab code from https://github.com/rasmusbergpalm/DeepLearnToolbox to Python.
+I decided to translate the Matlab code from https://github.com/rasmusbergpalm/DeepLearnToolbox to Python. Please note any
+improvements/suggestions are highly welcomed.
 
+I have completed the code for the following
+
+		1. NN
+		2. CNN
+		3. DBN
+		4. SAE
+		5. CAE - This seems to be incomplete from the original source. But will try to implement it once I understand more about it.
+		
 Note you are free to update this code and submit fixes. It is a code purely written for educational purpose. 
 If you are stuck at hefty packages like caffe, cuda, torch , tensorflow and feel lost with deep neural networks, 
 then the matlab version of the code or this python version is where you should start.
@@ -69,3 +77,15 @@ With epochs = 1,  and batches = 100, total batches = 600
 |                                |  10.93        | 10.97      | 
 | Unfolded to NN                 |    Full Batch Error        |	 					             
 |								 |	0.0667		 | 0.067      |	
+
+
+With epochs = 1,  and batches = 100, total batches = 600  
+
+(Full Batch Errors)
+
+| SAE (DE-NOISING)               | Python        | Matlab     |
+| ------------------------------ |:-------------:| ----------:|
+| size = (784,100,10)            |  13.46        | 12.70	  |                                 
+|							     |				 |			  |	    	 					             
+| Using FFNN to initialize NN    |  0.13         | 0.12       |
+	
