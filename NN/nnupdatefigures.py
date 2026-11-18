@@ -2,6 +2,9 @@
 Created on Aug 10, 2016
 
 @author: Wajih-PC
+
+Updated on 18th November 2026
+@author: Lenovo Laptop
 '''
 import matplotlib.pyplot as plt
 import numpy as np
@@ -42,14 +45,14 @@ def nnupdatefigures(nn,figureNo,L,opts,i):
             plot_yfrac = plot_yfrac.T
         
         #plotting
-        if plt.fignum_exists(str(figureNo)) == False:
+        if not plt.fignum_exists(figureNo):
             plt.ion()
         plt.figure(figureNo)     
         if nn.Output == "softmax":
             ax = plt.subplot(121)
             if len(M) < 2:
                 if i == 1:
-                    plt.plot(plot_x,plot_ye,label = M, color = 'b')
+                    plt.plot(plot_x,plot_ye,label = M[0], color = 'b')
                     plt.legend(loc="upper right") 
             if len(M) > 1:
                     ax.plot(plot_x[:,0],plot_ye[:,0],label= M[0],color = 'blue')
@@ -70,8 +73,8 @@ def nnupdatefigures(nn,figureNo,L,opts,i):
                 if i == 1:
                     plt.plot(plot_x,plot_yfrac,label = M[0], color = 'b') 
             if len(M) > 1:
-                    ax.plot(plot_x[:,0],plot_ye[:,0],label= M[0],color = 'blue')
-                    ax.plot(plot_x[:,1],plot_ye[:,1],label= M[1],color = 'red') 
+                    ax.plot(plot_x[:,0],plot_yfrac[:,0],label= M[0],color = 'blue')
+                    ax.plot(plot_x[:,1],plot_yfrac[:,1],label= M[1],color = 'red') 
                     plt.legend(M,loc="upper right")                
                                 
             plt.xlabel("Number of epochs")
@@ -85,7 +88,7 @@ def nnupdatefigures(nn,figureNo,L,opts,i):
             plt.xlabel("Number of epochs")
             plt.ylabel("Error")
             plt.title("Error")      
-            plt.plot(plot_x,plot_ye,label = M if i == 1 else "",color = 'b')
+            plt.plot(plot_x,plot_ye,label = M[0] if i == 1 else "",color = 'b')
             plt.xlim(0, opts["numepochs"]+1)        
             plt.legend(loc="upper right")
             plt.draw()

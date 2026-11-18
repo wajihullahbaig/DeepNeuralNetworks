@@ -2,17 +2,19 @@
 Created on Sep 24, 2016
 
 @author: Wajih-PC
+
+Updated on 18th November 2026
+@author: Lenovo Laptop
 '''
 from util import sigmrnd,sigm
 import numpy as np
-def rbmtrain(rbm, x, opts):
-    assert(np.all(isinstance(i, float) for i in x)), "x must be a float"
+def rbmtrain(rbm, x, opts, callback=None, rbm_idx=0):
+    assert np.issubdtype(x.dtype, np.floating), "x must be a float"
     assert(np.all(x[:]>=0) and np.all(x[:]<=1)), "all data in x must be in [0:1]"
     m = x.shape[0];
     batchsize = opts["batchsize"]
-    numbatches = int(m / batchsize)
-    
-    assert(numbatches%1 == 0), "numbatches not integer"
+    assert(m % batchsize == 0), "numbatches not integer"
+    numbatches = m // batchsize
  
     for i  in range(0 , opts["numepochs"]):
         kk = np.random.permutation(range(m)) # For testing, go random
@@ -30,14 +32,17 @@ def rbmtrain(rbm, x, opts):
 
             rbm.vW = np.add(rbm.Momentum * rbm.vW , rbm.Alpha * (c1 - c2)     / float(batchsize))
             # Add a singleton dimension after sum
-            rbm.vB = np.add(rbm.Momentum * rbm.vB , rbm.Alpha * sum(v1 - v2,0).T[:,None] / float(batchsize))
-            rbm.vC = np.add(rbm.Momentum * rbm.vC , rbm.Alpha * sum(h1 - h2,0).T[:,None] / float(batchsize))
+            rbm.vB = np.add(rbm.Momentum * rbm.vB , rbm.Alpha * np.sum(v1 - v2, axis=0).T[:,None] / float(batchsize))
+            rbm.vC = np.add(rbm.Momentum * rbm.vC , rbm.Alpha * np.sum(h1 - h2, axis=0).T[:,None] / float(batchsize))
 
             rbm.W = rbm.W + rbm.vW;
             rbm.B = rbm.B + rbm.vB;
             rbm.C = rbm.C + rbm.vC;
             
-            err = err + np.sum(np.power(v1 - v2 , 2)) / batchsize
+            batch_err = np.sum(np.power(v1 - v2 , 2)) / batchsize
+            err = err + batch_err
+            if callback is not None:
+                callback(rbm, rbm_idx, i, l, batch_err, v1, v2)
         
         print("epoch " +str(i+1) +"/" +str(opts["numepochs"]) + ". Average reconstruction error is: " +str(err / numbatches))
     return rbm       

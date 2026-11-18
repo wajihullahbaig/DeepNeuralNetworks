@@ -1,3 +1,8 @@
+'''
+Updated on 18th November 2026
+
+@author: Lenovo Laptop
+'''
 import numpy as np
 from NN import NeuralNetwork
 from util import tanh_opt, sigm
@@ -32,11 +37,9 @@ def nnff(nn,x,y):
             if nn.Testing == True:
                 nn.A[i] = np.multiply(nn.A[i],(1-nn.DropoutFraction))
             else:
-                nn.DropOutMask[i] = np.random.uniform(1,0,nn.A[i].shape)
-                # Get the indices and convert them to floats
-                indices = [nn.DropOutMask[i] > nn.DropoutFraction]
-                tempMask = np.where(indices,1,0).astype(np.float64) # convert binary to float
-                nn.DropOutMask[i] = tempMask.squeeze() # Remove the extra unwanted dimension
+                nn.DropOutMask[i] = np.random.uniform(0,1,nn.A[i].shape)
+                tempMask = np.where(nn.DropOutMask[i] > nn.DropoutFraction,1.0,0.0) # convert binary to float
+                nn.DropOutMask[i] = tempMask
                 nn.A[i] = np.multiply(nn.A[i],nn.DropOutMask[i])
                 nn.A[i][nn.A[i]==0.] = 0 # Remove the negative zeros that propagate to cause large errors in testing phase
                  
@@ -47,7 +50,7 @@ def nnff(nn,x,y):
             pass
         
         #Add Bias term
-        biasTerm = np.ones(shape = (nn.A[i].shape[0],nn.A[i].shape[1]+1.0), dtype=np.float64)
+        biasTerm = np.ones(shape = (nn.A[i].shape[0],nn.A[i].shape[1]+1), dtype=np.float64)
         biasTerm[:,1:] = nn.A[i]
         nn.A[i] = biasTerm
     
@@ -57,11 +60,9 @@ def nnff(nn,x,y):
         nn.A[n-1] = np.dot(nn.A[n-2],nn.W[n-2].T)
     elif nn.Output == 'softmax':
         nn.A[n-1] = np.dot(nn.A[n-2],nn.W[n-2].T)
-        maxVector = nn.A[n-1].argmax(axis=1) # Returns a flattened array
-        maxVector = maxVector.reshape(maxVector.shape[0],1) # Convert to coloumn vector Mx1
+        maxVector = np.amax(nn.A[n-1], axis=1, keepdims=True)
         nn.A[n-1] = np.exp(np.subtract(nn.A[n-1],maxVector))
-        sumVector = np.sum(nn.A[n-1],1)
-        sumVector = sumVector.reshape(sumVector.shape[0],1) # Convert to coloumn vector Mx1
+        sumVector = np.sum(nn.A[n-1],1, keepdims=True)
         nn.A[n-1] = np.true_divide(nn.A[n-1],sumVector)
     
     # Error and Loss

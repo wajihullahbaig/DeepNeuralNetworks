@@ -2,10 +2,15 @@
 Created on Sep 24, 2016
 
 @author: Wajih-PC
+
+Updated on 18th November 2026
+@author: Lenovo Laptop
 '''
+import os
+import matplotlib.pyplot as plt
 import numpy as np
 from util.scaledimage import scaledimage
-def visualize(X, mm, s1, s2):
+def visualize(X, mm=None, s1=None, s2=None, ax=None, save_path=None):
     
     if mm is None:
         mm = [np.min(X[:]), np.max(X[:])]
@@ -19,9 +24,11 @@ def visualize(X, mm, s1, s2):
     s=np.sqrt(D);
     if s==np.floor(s) or (s1 !=0 and s2 !=0):
         if s1 ==0 or s2 ==0:
-            s1 = s; s2 = s;        
+            s1 = int(s); s2 = int(s);
+        else:
+            s1 = int(s1); s2 = int(s2);
         #its a square, so data is probably an image
-        num=np.ceil(np.sqrt(N));
+        num=int(np.ceil(np.sqrt(N)));
         a=mm[1]*np.ones(shape= (num*s2+num-1,num*s1+num-1))
         x=0;
         y=0;
@@ -41,5 +48,9 @@ def visualize(X, mm, s1, s2):
         a=X;
     
     
-    scaledimage(a)    
+    out_ax = scaledimage(a, ax=ax)
+    if save_path is not None:
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        out_ax.figure.savefig(save_path, bbox_inches="tight", dpi=150)
+    return out_ax
     

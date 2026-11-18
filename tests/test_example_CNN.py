@@ -2,30 +2,37 @@
 Created on Aug 25, 2016
 
 @author: Wajih-PC
+
+Updated on 18th November 2026
+@author: Lenovo Laptop
 '''
+import os
 import sys
-from CNN import cnntrain, cnntest
-sys.path.append('E:\RnD\Machine Learning\DNN\EclipseWorkSpace\DeepNeuralNetworks')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import matplotlib
 import matplotlib.pyplot as plt
-from data import importMat
+from CNN import cnntrain, cnntest
+from data import mnist
 from CNN import ConvolutionalNeuralNetwork
 import numpy as np
 
     
-def test_example_CNN():
-    dataSet = importMat.loadMatFile()
+def test_example_CNN(interactive=None):
+    if interactive is None:
+        interactive = os.environ.get("DNN_NONINTERACTIVE") != "1" and matplotlib.get_backend().lower() != "agg"
+    dataSet = mnist.load_mnist()
     if dataSet is not None:
         keys = dataSet.keys()
         for key in keys:
             if key == "train_x":
                 train_x = dataSet[key]
-                train_x = np.reshape(train_x.T,(28,28,-1),order="F")/255.0 # Fortran ordering to make sure we have the same as in Matlab
+                train_x = np.transpose(train_x.reshape(-1, 28, 28), (1, 2, 0)) / 255.0
             elif key == "train_y":
                 train_y = dataSet[key]
                 train_y = train_y.T
             elif key == "test_x":
                 test_x = dataSet[key]
-                test_x = np.reshape(test_x.T,(28,28,-1),order="F")/255.0 # F ordering to make sure we have the same as in Matlab                
+                test_x = np.transpose(test_x.reshape(-1, 28, 28), (1, 2, 0)) / 255.0
             elif key == "test_y":
                 test_y = dataSet[key]
                 test_y = test_y.T            
@@ -39,11 +46,22 @@ def test_example_CNN():
     cnn = cnntrain.cnntrain(cnn, train_x, train_y, options)
     err = cnntest.cnntest(cnn,test_x,test_y)[0]
     print("Error:"+str(err))    
-    plt.figure()
+    out_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
+    os.makedirs(out_dir, exist_ok=True)
+    fig = plt.figure()
     plt.plot(cnn.rL)   
-    plt.show()
+    plt.title("CNN Training Loss (rL)")
+    plt.xlabel("Batch")
+    plt.ylabel("Loss")
+    fig.savefig(os.path.join(out_dir, "cnn_training_loss.png"), bbox_inches="tight", dpi=150)
+    if interactive:
+        plt.show()
+    else:
+        plt.close(fig)
     assert err < 0.12,"Too big error"
     print ("test_example_CNN completed")
-    input("Press [enter] to continue.") 
-test_example_CNN()      
-    
+    if interactive:
+        input("Press [enter] to continue.") 
+
+if __name__ == "__main__":
+    test_example_CNN()

@@ -2,6 +2,9 @@
 Created on Sep 11, 2016
 
 @author: Wajih-PC
+
+Updated on 18th November 2026
+@author: Lenovo Laptop
 '''
 import numpy as np
 from CNN import Layers
@@ -14,6 +17,6 @@ def cnnapplygrads(net, opts):
                 net.layers[l].B[j] = net.layers[l].B[j] - opts["alpha"] * net.layers[l].dB[j];
 
     net.ffW = net.ffW - opts["alpha"] * net.dffW;
-    net.ffb = net.ffB - opts["alpha"] * net.dffB;
+    net.ffB = net.ffB - opts["alpha"] * net.dffB;
 
     return net

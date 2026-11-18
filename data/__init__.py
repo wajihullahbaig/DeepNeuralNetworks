@@ -1,7 +1,2 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue May 24 10:56:59 2016
-
-@author: Wajih-PC
-"""
-
+from data.mnist import load_mnist
+from data.download_mnist import download_mnist

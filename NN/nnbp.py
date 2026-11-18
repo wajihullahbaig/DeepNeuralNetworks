@@ -3,6 +3,9 @@ Created on Jun 8, 2016
 
 @author: Wajih-PC
 
+Updated on 18th November 2026
+@author: Lenovo Laptop
+
 NNBP performs Backpropagation
 returns a NN with updated weights
 '''
@@ -16,7 +19,7 @@ def nnbp(nn):
     if nn.Output == "sigm":
         temp2 = 1- nn.A[n-1]    
         d[n-1] = - np.multiply(nn.E,np.multiply(nn.A[n-1],temp2))
-    elif nn.Output == "softmax" or "linear":
+    elif nn.Output in ("softmax", "linear"):
         d[n-1] = - nn.E
     for i in range(n-2,0,-1):
         # Derivative of the activation function

@@ -2,11 +2,13 @@
 Created on Sep 11, 2016
 
 @author: Wajih-PC
+
+Updated on 18th November 2026
+@author: Lenovo Laptop
 '''
 import numpy as np
-from scipy.signal import fftconvolve
 from CNN import Layers
-from util import flipall
+from util import conv2d
 
 def cnnbp(net,y):
     
@@ -45,28 +47,30 @@ def cnnbp(net,y):
                 t2 = np.repeat(t2, net.layers[l + 1].Scale,1)
                 net.layers[l].D[j] = t1*t2/(net.layers[l + 1].Scale*net.layers[l + 1].Scale)
         elif isinstance(net.layers[l], Layers.ScaleLayer):
-            for i in range(0,len(net.layers[l].A)):
-                z = np.zeros(net.layers[l].A[0].shape)
-                for j in range (0,len(net.layers[l+1].A)):
-                    kernel = np.rot90(net.layers[l + 1].K[i,j],2)
-                    # Adding singleton dimension so that we can perform convolution
-                    kernel = kernel[:,:,None]
-                    # Have to use fftconvolve instead of ndimage.convolve
-                    # fftConvolve gives mode='full' option
-                    convolutionResult = fftconvolve(net.layers[l+1].D[i],kernel,mode='full')
-                    z = np.add(z,convolutionResult)
-                net.layers[l].D[i] = z
+            k_swap = {
+                (j, i): net.layers[l + 1].K[i, j]
+                for i in range(len(net.layers[l].A))
+                for j in range(len(net.layers[l + 1].A))
+            }
+            d_maps = conv2d.conv2d_full_batch(
+                net.layers[l + 1].D,
+                k_swap,
+                len(net.layers[l].A),
+                rot180=True,
+            )
+            for i in range(0, len(net.layers[l].A)):
+                net.layers[l].D[i] = d_maps[i]
                 
     # Calculate gradient
     for l in range(1,n) :
         if isinstance(net.layers[l], Layers.ConvolutionalLayer):
+            kh = net.layers[l].KernelSize
+            grads = conv2d.conv2d_grad_kernels_valid(net.layers[l - 1].A, net.layers[l].D, kh, kh)
+            batch_size = float(net.layers[l].D[0].shape[2])
             for j in range(0,len(net.layers[l].A)):
                 for i in range(0,len(net.layers[l-1].A)):
-                    temp = flipall.flipall(net.layers[l-1].A[i])
-                    net.layers[l].dK[i,j] =fftconvolve(temp,net.layers[l].D[j],mode='valid')
-                    # Remove the singleton dimension
-                    net.layers[l].dK[i,j] = np.squeeze(net.layers[l].dK[i,j])/ net.layers[l].D[j].shape[2]                    
-                net.layers[l].dB[j] = np.sum(net.layers[l].D[j])/net.layers[l].D[j].shape[2]    
+                    net.layers[l].dK[i,j] = grads[(i, j)] / batch_size
+                net.layers[l].dB[j] = np.sum(net.layers[l].D[j]) / batch_size
     
     net.dffW = np.dot(net.oD,net.fV.T) / net.oD.shape[1]
     net.dffB = np.mean(net.oD,1)    

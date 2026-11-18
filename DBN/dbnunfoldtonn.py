@@ -2,6 +2,9 @@
 Created on Sep 25, 2016
 
 @author: Wajih-PC
+
+Updated on 18th November 2026
+@author: Lenovo Laptop
 '''
 import numpy as np
 from NN import NeuralNetwork
@@ -12,7 +15,7 @@ def dbnunfoldtonn(dbn, outputsize):
     if outputsize is not None: 
         size = np.append(dbn.dbnSizes, outputsize)
     else:
-        size = np.array(dbn.sizes)
+        size = np.array(dbn.dbnSizes)
             
     nn = NeuralNetwork.NN(size)
     for i in range(0 , len(dbn.RBM)):

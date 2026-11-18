@@ -2,27 +2,31 @@
 Created on Aug 26, 2016
 
 @author: Wajih-PC
+
+Updated on 18th November 2026
+@author: Lenovo Laptop
 '''
 
 from CNN import Layers
 import numpy as np
 class CNN:
-    # Define the deep layers        
-    layers = [Layers.InputLayer(),Layers.ConvolutionalLayer(6,5),Layers.ScaleLayer(2),Layers.ConvolutionalLayer(12,5),Layers.ScaleLayer(2)]
-    inputMaps = 1
-    mapsize = 0   
-    ffB = None #Bias
-    ffW = None #Weights
-    dffB = None 
-    dffW = None
-    fV = None # feature vector
-    O = None # Output perceptron
-    E = None # Error
-    rL = []
-    L = 0; # Loss
-    oD = None
-    fVD = None
-    def __init__(self,x,y):        
+    def __init__(self,x,y,layers=None):
+        if layers is None:
+            self.layers = [Layers.InputLayer(),Layers.ConvolutionalLayer(6,5),Layers.ScaleLayer(2),Layers.ConvolutionalLayer(12,5),Layers.ScaleLayer(2)]
+        else:
+            self.layers = layers
+        self.inputMaps = 1
+        self.ffB = None #Bias
+        self.ffW = None #Weights
+        self.dffB = None 
+        self.dffW = None
+        self.fV = None # feature vector
+        self.O = None # Output perceptron
+        self.E = None # Error
+        self.rL = []
+        self.L = 0; # Loss
+        self.oD = None
+        self.fVD = None
         self.mapsize =  np.asarray(np.shape(x[:,:,0]))
         for l in range(0,len(self.layers)):
             if isinstance(self.layers[l], Layers.ScaleLayer):
@@ -47,7 +51,7 @@ class CNN:
         # 'ffb' is the biases of the output neurons.
         # 'ffW' is the weights between the last layer and the output neurons. Note that the last layer is fully connected to the output layer, that's why the size of the weights is (onum * fvnum)
                 
-        fvnum = np.prod(self.mapsize,axis = 0) * self.inputMaps
-        onum =  np.shape(y)[0]       
+        fvnum = int(np.prod(self.mapsize,axis = 0) * self.inputMaps)
+        onum =  int(np.shape(y)[0])
         self.ffB = np.zeros(shape = (onum,1),dtype = np.float64)
         self.ffW = ((np.random.uniform(0,1,[fvnum,onum])-0.5)*2*np.sqrt(6/(onum+fvnum))).T           

@@ -2,6 +2,9 @@
 Created on Jun 8, 2016
 
 @author: Wajih-PC
+
+Updated on 18th November 2026
+@author: Lenovo Laptop
 '''
 
 import numpy as np
@@ -12,31 +15,30 @@ from NN import Collections
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import ioff
 
-def nntrain(nn, train_x, train_y, opts,val_x,val_y,figureNo):    
+def nntrain(nn, train_x, train_y, opts,val_x=None,val_y=None,figureNo=None,callback=None):    
     m = train_x.shape[0]
     batchsize = opts["batchsize"]
     numepochs = opts["numepochs"]
     opts["validation"] = 0
     if val_x is not None and val_y is not None:
         opts["validation"] = 1
-    numbatches = m/batchsize
+    assert (m % batchsize == 0),"numbatches must be an integer"
+    numbatches = m // batchsize
     loss = Collections.Loss(numepochs)   
 
-    assert (numbatches%1 == 0),"numbatches must be an integer"
-    
     L = np.zeros(shape=(numepochs*numbatches,1),dtype=np.float64)
     n = 0
     for i in range(0,numepochs):
         tic = time()
         kk = np.random.permutation(range(m)) # For testing, go random
         #kk = np.arange(0,m,1); # For debugging, go sequentially
-        for l in range(0,round(numbatches)):
+        for l in range(0,numbatches):
             batch_x = train_x[kk[l* batchsize  : (l+1) * batchsize], :]
         
             #Add noise to input (for use in denoising autoencoder)
             if (nn.InputZeroMaskedFraction != 0):
                 temp = np.random.uniform(0,1,batch_x.shape)
-                temp= np.where(temp<=nn.InputZeroMaskedFraction,0,temp)
+                temp= np.where(temp<=nn.InputZeroMaskedFraction,0.0,1.0)
                 batch_x = np.multiply(batch_x,temp)
                 
             batch_y = train_y[kk[l* batchsize  : (l+1) * batchsize], :]
@@ -45,6 +47,8 @@ def nntrain(nn, train_x, train_y, opts,val_x,val_y,figureNo):
             nn = nnapplygrads.nnapplygrads(nn)
             
             L[n] = nn.L
+            if callback is not None:
+                callback(nn, i, l, nn.L, n)
             
             n= n+1
         toc = time()
@@ -57,10 +61,9 @@ def nntrain(nn, train_x, train_y, opts,val_x,val_y,figureNo):
         else:
             loss = nneval.nneval(nn,loss,train_x,train_y,val_x,val_y,i)
             str_pref = " Full-batch train err = {0}".format(loss.Training.E[i])
-            nn.LearningRate = nn.LearningRate*nn.ScalingLearningRate
         if "plot" in opts and opts["plot"]== 1 and opts["numepochs"] > 1:    
            nnupdatefigures.nnupdatefigures(nn, figureNo, loss, opts, i)
                         
-        print("epoch " , i+1 ,"/" , opts["numepochs"], ". Took " ,t, " seconds. Mini-batch mean squared error on training set is " , np.mean(L[n-numbatches:n-1]) ,str_pref)
+        print("epoch " , i+1 ,"/" , opts["numepochs"], ". Took " ,t, " seconds. Mini-batch mean squared error on training set is " , np.mean(L[n-numbatches:n]) ,str_pref)
         nn.LearningRate = nn.LearningRate * nn.ScalingLearningRate;
     return nn,L     
