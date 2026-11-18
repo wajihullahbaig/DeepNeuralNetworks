@@ -21,7 +21,7 @@ os.environ["MPLBACKEND"] = "Agg"
 import matplotlib
 matplotlib.use("Agg")
 
-from data import download_mnist
+from data.download_mnist import download_mnist
 from tests.test_example_NN import test_example_NN
 from tests.test_example_CNN import test_example_CNN
 from tests.test_example_DBN import test_example_DBN
@@ -33,7 +33,7 @@ from scripts.generate_training_gifs import main as generate_gifs
 def main():
     t0 = time.time()
     print("=== Step 1: Ensuring unified MNIST dataset ===")
-    download_mnist.download_mnist()
+    download_mnist()
 
     print("\n=== Step 2: Running all 5 model test suites ===")
     for name, fn in [
