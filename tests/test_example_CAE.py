@@ -105,7 +105,7 @@ def test_example_CAE(interactive=None):
 
     # ex1: Train a denoising Convolutional Autoencoder (12 filters, 5x5, 2x2 pooling)
     np.random.seed(1)
-    cae = CAE(inputMaps=1, outputMaps=12, kernelSize=5, scale=2, noise=0.3, momentum=0.8, loss="bce")
+    cae = CAE(inputMaps=1, outputMaps=12, kernelSize=5, scale=2, noise=0.3, momentum=0.5, loss="bce")
     init_mse, _ = caetest(cae, test_x[:, :, :1000])
 
     options = {"alpha": 4.0, "numepochs": 3, "batchsize": 50}
@@ -113,7 +113,7 @@ def test_example_CAE(interactive=None):
     final_mse, _ = caetest(cae, test_x[:, :, :1000])
     print(f"CAE ex1 reconstruction MSE: {init_mse:.6f} -> {final_mse:.6f}")
     assert final_mse < init_mse * 0.2, f"CAE reconstruction MSE did not decrease enough: {final_mse}"
-    assert final_mse < 0.045, f"Too big CAE reconstruction MSE: {final_mse}"
+    assert final_mse < 0.03, f"Too big CAE reconstruction MSE: {final_mse}"
 
     out_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
     filters = np.column_stack([cae.IK[(0, j)].ravel() for j in range(cae.OutputMaps)])

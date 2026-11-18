@@ -164,10 +164,16 @@ def generate_nn_gif(train_x, train_y, test_x, test_y):
     np.random.seed(1)
     nn = NeuralNetwork.NN(np.array([784, 100, 10]))
     nn.Output = "softmax"
-    numepochs = 3
-    batchsize = 100
+    nn.WeightPenaltyL2 = 1e-4
+    numepochs = 6
+    batchsize = 1000
     numbatches = tx_norm.shape[0] // batchsize
-    snap_steps = build_snapshot_steps(numbatches, numepochs)
+    # Early emergence + smooth epoch progression for batchsize=1000 (60 batches/epoch)
+    snap_steps = {(0, 0), (0, 2), (0, 5), (0, 10), (0, 18), (0, 30), (0, 45), (0, 59)}
+    for ep in range(1, numepochs):
+        snap_steps.add((ep, 29))
+        snap_steps.add((ep, 59))
+    active_mask = (sigma > 1e-3).astype(np.float64)
 
     frames = []
     hist_steps, hist_loss, hist_acc = [], [], []
@@ -183,11 +189,11 @@ def generate_nn_gif(train_x, train_y, test_x, test_y):
 
         # Live reverse map from target class '3' through hidden activations -> 28x28 pixels
         class_contrib = hidden_act * net.W[1][3, 1:]
-        rev_map = (class_contrib @ net.W[0][:, 1:]).reshape(28, 28)
+        rev_map = ((class_contrib @ net.W[0][:, 1:]) * active_mask).reshape(28, 28)
         rev_max = max(np.percentile(np.abs(rev_map), 99), 1e-3)
 
-        # 16 hidden receptive fields (4x4 grid)
-        rf = net.W[0][:16, 1:].reshape(16, 28, 28)
+        # 16 hidden receptive fields (4x4 grid) masked to active MNIST strokes
+        rf = (net.W[0][:16, 1:] * active_mask).reshape(16, 28, 28)
         vmax = max(np.percentile(np.abs(rf), 99), 1e-3)
 
         fig = plt.figure(figsize=(10.8, 5.4), dpi=100, facecolor=BG_DARK)
@@ -394,18 +400,20 @@ def generate_cnn_gif(train_x, train_y, test_x, test_y):
 
         # Col 3 Bottom: Loss & Accuracy
         ax_l = fig.add_subplot(gs[1, 2])
-        style_axes(ax_l, "Loss & Test Accuracy (%)")
+        style_axes(ax_l, "Loss (Red) & Test Acc % (Green)")
         ax_l.set_xlim(0, numepochs * numbatches)
         ax_l.set_ylim(0, 1.4)
         ax_l.set_xlabel("Mini-batch Step", color=TEXT_MUTED, fontsize=8.5)
         ax_l.grid(color=BORDER_CLR, alpha=0.45, linewidth=0.6)
         if hist_steps:
-            ax_l.plot(hist_steps, hist_loss, color=CORAL, linewidth=2.2)
+            l1, = ax_l.plot(hist_steps, hist_loss, color=CORAL, linewidth=2.2, label="Loss")
             ax_r = ax_l.twinx()
             ax_r.set_ylim(0, 102)
             ax_r.tick_params(axis="y", colors=GREEN, labelsize=8.5)
             ax_r.spines["right"].set_color(BORDER_CLR)
-            ax_r.plot(hist_steps, hist_acc, color=GREEN, linewidth=2.2)
+            l2, = ax_r.plot(hist_steps, hist_acc, color=GREEN, linewidth=2.2, label="Acc %")
+            ax_l.legend([l1, l2], ["Loss", "Acc %"], loc="center right",
+                        facecolor=CARD_BG, edgecolor=BORDER_CLR, labelcolor=TEXT_MAIN, fontsize=8)
 
         frames.append(fig_to_pil(fig))
         plt.close(fig)
@@ -519,7 +527,7 @@ def generate_dbn_gif(train_x, train_y, test_x, test_y):
             ax_err.plot(hist_x, hist_recon, color=AMBER, linewidth=2.2)
             ax_err.scatter([hist_x[-1]], [hist_recon[-1]], color=TEXT_MAIN, s=26, zorder=5)
         ax_err.set_xlim(0, len(rbm1_snaps) + len(rbm2_snaps) + len(nn_snaps) + 2)
-        ax_err.set_ylim(0, 210)
+        ax_err.set_ylim(0, 230)
         ax_err.grid(color=BORDER_CLR, alpha=0.45, linewidth=0.6)
 
         # Col 3 Bottom: Fine-tuning test accuracy
@@ -672,7 +680,7 @@ def generate_sae_gif(train_x, train_y, test_x, test_y):
             ax_loss.plot(hist_x, hist_ae_loss, color=PURPLE, linewidth=2.2)
             ax_loss.scatter([hist_x[-1]], [hist_ae_loss[-1]], color=TEXT_MAIN, s=26, zorder=5)
         ax_loss.set_xlim(0, len(ae_snaps) + len(nn_snaps) + 2)
-        ax_loss.set_ylim(0, 105)
+        ax_loss.set_ylim(0, 120)
         ax_loss.grid(color=BORDER_CLR, alpha=0.45, linewidth=0.6)
 
         # Col 3 Bottom: Classifier accuracy
@@ -757,7 +765,7 @@ def generate_cae_gif(train_x, train_y, test_x, test_y):
     probe_noisy = probe_clean * probe_mask
 
     np.random.seed(1)
-    cae = CAE(inputMaps=1, outputMaps=12, kernelSize=5, scale=2, noise=0.3, momentum=0.8, loss="bce")
+    cae = CAE(inputMaps=1, outputMaps=12, kernelSize=5, scale=2, noise=0.3, momentum=0.5, loss="bce")
     numepochs = 3
     batchsize = 50
     numbatches = cx_train.shape[2] // batchsize
@@ -777,7 +785,8 @@ def generate_cae_gif(train_x, train_y, test_x, test_y):
         recons = net.O[0]
         enc_k = np.array([net.IK[(0, j)] for j in range(12)])
         dec_k = np.array([net.OK[(0, j)] for j in range(12)])
-        k_max = max(np.max(np.abs(enc_k)), np.max(np.abs(dec_k)), 1e-3)
+        enc_norm = enc_k / max(np.max(np.abs(enc_k)), 1e-3)
+        dec_norm = dec_k / max(np.max(np.abs(dec_k)), 1e-3)
 
         panels = []
         for idx in range(4):
@@ -817,9 +826,9 @@ def generate_cae_gif(train_x, train_y, test_x, test_y):
         ax_k = fig.add_subplot(gs[1, 1])
         style_axes(ax_k, "Encoder IK (Top) & Decoder OK (Bottom)")
         hide_ticks(ax_k)
-        k_both = np.concatenate([enc_k, dec_k], axis=0)
+        k_both = np.concatenate([enc_norm, dec_norm], axis=0)
         ax_k.imshow(tile_images(k_both, 4, 6, pad=1, bg=0.0), cmap="RdBu_r",
-                    vmin=-k_max, vmax=k_max, interpolation="nearest")
+                    vmin=-1.0, vmax=1.0, interpolation="nearest")
 
         # Col 3 Top: BCE training loss
         ax_loss = fig.add_subplot(gs[0, 2])

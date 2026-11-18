@@ -23,7 +23,7 @@ class CAE:
 
         fan_in = self.InputMaps * self.KernelSize * self.KernelSize
         fan_out = self.OutputMaps * self.KernelSize * self.KernelSize
-        bound_enc = np.sqrt(6.0 / (fan_in + fan_out))
+        bound_enc = 4.0 * np.sqrt(6.0 / (fan_in + fan_out))
         bound_dec = np.sqrt(6.0 / (fan_in + fan_out))
 
         self.IK = {}
