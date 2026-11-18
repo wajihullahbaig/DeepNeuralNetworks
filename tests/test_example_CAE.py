@@ -128,14 +128,14 @@ def test_example_CAE(interactive=None):
             {"outputMaps": 6, "kernelSize": 5, "scale": 2, "noise": 0.2, "loss": "bce"},
             {"outputMaps": 12, "kernelSize": 5, "scale": 2, "noise": 0.0, "loss": "bce"},
         ],
-        momentum=0.7,
+        momentum=0.8,
     )
-    scae = scaetrain(scae, train_x[:, :, :5000], {"alpha": 3.0, "numepochs": 2, "batchsize": 50})
+    scae = scaetrain(scae, train_x[:, :, :15000], {"alpha": 4.0, "numepochs": 2, "batchsize": 50})
     cnn = caeunfoldtocnn(scae, train_x[:, :, :50], train_y[:, :50])
-    cnn = cnntrain.cnntrain(cnn, train_x[:, :, :10000], train_y[:, :10000], {"alpha": 1.0, "numepochs": 1, "batchsize": 50})
+    cnn = cnntrain.cnntrain(cnn, train_x[:, :, :30000], train_y[:, :30000], {"alpha": 1.0, "numepochs": 1, "batchsize": 50})
     err, _ = cnntest.cnntest(cnn, test_x[:, :, :2000], test_y[:, :2000])
-    print(f"SCAE-initialized CNN error (10k train, 1 epoch): {err:.6f}")
-    assert err < 0.25, f"SCAE unfolded CNN error too high: {err}"
+    print(f"SCAE-initialized CNN error (30k train, 1 epoch): {err:.6f}")
+    assert err < 0.22, f"SCAE unfolded CNN error too high: {err}"
 
     print("test_example_CAE completed")
     if interactive:
